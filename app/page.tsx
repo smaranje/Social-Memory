@@ -26,7 +26,11 @@ import {
   ChevronRight,
   Activity,
   Target,
-  Zap
+  Zap,
+  Menu,
+  X,
+  Bell,
+  Settings
 } from 'lucide-react';
 
 export default function Home() {
@@ -37,6 +41,7 @@ export default function Home() {
   const [upcomingReminders, setUpcomingReminders] = useState<any[]>([]);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [filterBy, setFilterBy] = useState<string>('all');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     // Load contacts from localStorage
@@ -104,8 +109,8 @@ export default function Home() {
 
   if (selectedContact) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
-        <div className="container mx-auto py-8 px-4 max-w-4xl">
+      <div className="min-h-screen bg-[hsl(var(--twitch-bg))] scrollbar-twitch">
+        <div className="container mx-auto py-4 px-4 max-w-4xl">
           <ContactDetail
             contact={selectedContact}
             onBack={() => setSelectedContact(null)}
@@ -120,7 +125,7 @@ export default function Home() {
 
   if (isAddingContact) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[hsl(var(--twitch-bg))] flex items-center justify-center p-4">
         <AddContactForm
           onSubmit={handleAddContact}
           onCancel={() => setIsAddingContact(false)}
@@ -130,182 +135,199 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
-      {/* Animated Background Elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
-      </div>
-
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-lg border-b border-white/20 sticky top-0 z-10 shadow-lg">
-        <div className="container mx-auto px-4 py-6">
+    <div className="min-h-screen bg-[hsl(var(--twitch-bg))] scrollbar-twitch">
+      {/* Mobile-optimized Header */}
+      <header className="bg-[hsl(var(--twitch-bg-secondary))] border-b border-[hsl(var(--twitch-border))] sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl blur-lg opacity-75"></div>
-                <div className="relative bg-gradient-to-r from-purple-600 to-pink-600 p-3 rounded-xl">
-                  <Brain className="h-8 w-8 text-white" />
+            <div className="flex items-center gap-3">
+              <button 
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="md:hidden tap-target flex items-center justify-center"
+              >
+                {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              </button>
+              <div className="flex items-center gap-2">
+                <div className="bg-[hsl(var(--twitch-purple))] p-2 rounded twitch-glow">
+                  <Brain className="h-6 w-6 text-white" />
                 </div>
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                <h1 className="text-xl md:text-2xl font-bold text-white hidden sm:block">
                   Social Memory
                 </h1>
-                <p className="text-sm text-gray-600 flex items-center gap-1">
-                  <Sparkles className="h-3 w-3" />
-                  Never forget what matters to the people who matter
-                </p>
               </div>
             </div>
-            <Button 
-              onClick={() => setIsAddingContact(true)} 
-              size="lg"
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Add Contact
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button 
+                size="icon"
+                variant="ghost"
+                className="tap-target text-[hsl(var(--twitch-text-secondary))] hover:text-white hover:bg-[hsl(var(--twitch-bg-tertiary))]"
+              >
+                <Bell className="h-5 w-5" />
+              </Button>
+              <Button 
+                onClick={() => setIsAddingContact(true)} 
+                size="sm"
+                className="btn-twitch tap-target flex items-center gap-2"
+              >
+                <Plus className="h-4 w-4" />
+                <span className="hidden sm:inline">Add</span>
+              </Button>
+            </div>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-[hsl(var(--twitch-bg-secondary))] border-t border-[hsl(var(--twitch-border))] slide-up">
+            <div className="p-4 space-y-2">
+              <Button variant="ghost" className="w-full justify-start text-left">
+                <Settings className="h-4 w-4 mr-2" />
+                Settings
+              </Button>
+              <Button variant="ghost" className="w-full justify-start text-left">
+                <Activity className="h-4 w-4 mr-2" />
+                Activity
+              </Button>
+            </div>
+          </div>
+        )}
       </header>
 
-      <div className="container mx-auto px-4 py-8 relative z-0">
-        {/* Stats Cards with Glassmorphism */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <Card className="bg-white/60 backdrop-blur-md border-white/20 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
-            <CardHeader className="pb-3">
-              <CardDescription className="text-gray-600">Total Contacts</CardDescription>
-              <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+      <div className="container mx-auto px-4 py-4 max-w-7xl">
+        {/* Stats Cards - Mobile Optimized */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+          <Card className="bg-[hsl(var(--twitch-bg-secondary))] border-[hsl(var(--twitch-border))] hover:border-[hsl(var(--twitch-purple))] transition-all duration-200 scale-in">
+            <CardHeader className="p-4">
+              <CardDescription className="text-[hsl(var(--twitch-text-muted))] text-xs">Total Contacts</CardDescription>
+              <CardTitle className="text-2xl font-bold text-[hsl(var(--twitch-purple))]">
                 {contacts.length}
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4 pt-0">
               <div className="flex items-center justify-between">
-                <Users className="h-5 w-5 text-purple-600" />
-                <span className="text-xs text-green-600 font-semibold">+12% this month</span>
+                <Users className="h-4 w-4 text-[hsl(var(--twitch-purple))]" />
+                <span className="text-xs text-green-500 font-semibold">+12%</span>
               </div>
             </CardContent>
           </Card>
           
-          <Card className="bg-white/60 backdrop-blur-md border-white/20 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
-            <CardHeader className="pb-3">
-              <CardDescription className="text-gray-600">Upcoming Reminders</CardDescription>
-              <CardTitle className="text-3xl font-bold text-orange-600">
+          <Card className="bg-[hsl(var(--twitch-bg-secondary))] border-[hsl(var(--twitch-border))] hover:border-[hsl(var(--twitch-purple))] transition-all duration-200 scale-in">
+            <CardHeader className="p-4">
+              <CardDescription className="text-[hsl(var(--twitch-text-muted))] text-xs">Reminders</CardDescription>
+              <CardTitle className="text-2xl font-bold text-orange-500">
                 {upcomingReminders.length}
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4 pt-0">
               <div className="flex items-center justify-between">
-                <Clock className="h-5 w-5 text-orange-500 animate-pulse" />
-                <span className="text-xs text-orange-600 font-semibold">Due this week</span>
+                <Clock className="h-4 w-4 text-orange-500 twitch-pulse" />
+                <span className="text-xs text-orange-500 font-semibold">This week</span>
               </div>
             </CardContent>
           </Card>
           
-          <Card className="bg-white/60 backdrop-blur-md border-white/20 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
-            <CardHeader className="pb-3">
-              <CardDescription className="text-gray-600">Conversations</CardDescription>
-              <CardTitle className="text-3xl font-bold text-green-600">
+          <Card className="bg-[hsl(var(--twitch-bg-secondary))] border-[hsl(var(--twitch-border))] hover:border-[hsl(var(--twitch-purple))] transition-all duration-200 scale-in hidden md:block">
+            <CardHeader className="p-4">
+              <CardDescription className="text-[hsl(var(--twitch-text-muted))] text-xs">Conversations</CardDescription>
+              <CardTitle className="text-2xl font-bold text-green-500">
                 {contacts.reduce((sum, c) => sum + c.conversations.length, 0)}
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4 pt-0">
               <div className="flex items-center justify-between">
-                <Activity className="h-5 w-5 text-green-500" />
-                <span className="text-xs text-green-600 font-semibold">Active connections</span>
+                <Activity className="h-4 w-4 text-green-500" />
+                <span className="text-xs text-green-500 font-semibold">Active</span>
               </div>
             </CardContent>
           </Card>
           
-          <Card className="bg-white/60 backdrop-blur-md border-white/20 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
-            <CardHeader className="pb-3">
-              <CardDescription className="text-gray-600">Engagement Score</CardDescription>
-              <CardTitle className="text-3xl font-bold text-blue-600">
+          <Card className="bg-[hsl(var(--twitch-bg-secondary))] border-[hsl(var(--twitch-border))] hover:border-[hsl(var(--twitch-purple))] transition-all duration-200 scale-in hidden md:block">
+            <CardHeader className="p-4">
+              <CardDescription className="text-[hsl(var(--twitch-text-muted))] text-xs">Engagement</CardDescription>
+              <CardTitle className="text-2xl font-bold text-blue-500">
                 92%
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4 pt-0">
               <div className="flex items-center justify-between">
-                <Target className="h-5 w-5 text-blue-500" />
-                <span className="text-xs text-blue-600 font-semibold">Great job!</span>
+                <Target className="h-4 w-4 text-blue-500" />
+                <span className="text-xs text-blue-500 font-semibold">Great!</span>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* AI Insights Section */}
-        <Card className="bg-gradient-to-r from-purple-600 to-pink-600 text-white mb-8 shadow-xl">
-          <CardContent className="p-6">
+        {/* AI Insights Section - Twitch Style */}
+        <Card className="bg-[hsl(var(--twitch-purple))] text-white mb-6 border-0 twitch-glow">
+          <CardContent className="p-4">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="bg-white/20 backdrop-blur-md p-3 rounded-lg">
-                  <Zap className="h-6 w-6" />
+              <div className="flex items-center gap-3">
+                <div className="bg-white/20 p-2 rounded">
+                  <Zap className="h-5 w-5 twitch-bounce" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold">AI Insights</h3>
-                  <p className="text-white/80">
-                    You have 3 contacts you haven't reached out to in over 30 days
+                  <h3 className="text-lg font-bold">AI Insights</h3>
+                  <p className="text-sm text-white/80">
+                    3 contacts need attention
                   </p>
                 </div>
               </div>
-              <Button variant="secondary" className="bg-white/20 hover:bg-white/30 text-white border-0">
-                View Suggestions
+              <Button variant="ghost" size="sm" className="text-white hover:bg-white/20">
+                View
                 <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
             </div>
           </CardContent>
         </Card>
 
-        {/* Search and Filter Bar */}
-        <div className="mb-6 space-y-4">
-          <div className="flex gap-4 items-center">
+        {/* Search and Filter Bar - Mobile Optimized */}
+        <div className="mb-6 space-y-3">
+          <div className="flex gap-2 items-center">
             <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[hsl(var(--twitch-text-muted))]" />
               <Input
                 type="text"
-                placeholder="Search contacts by name, tags, location..."
+                placeholder="Search contacts..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 pr-4 py-6 bg-white/80 backdrop-blur-md border-white/20 shadow-lg rounded-xl text-lg placeholder:text-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                className="pl-10 pr-4 py-3 bg-[hsl(var(--twitch-bg-secondary))] border-[hsl(var(--twitch-border))] text-white placeholder:text-[hsl(var(--twitch-text-muted))] focus:border-[hsl(var(--twitch-purple))] rounded"
               />
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-1">
               <Button
-                variant={viewMode === 'grid' ? 'default' : 'outline'}
+                variant={viewMode === 'grid' ? 'default' : 'ghost'}
                 size="icon"
                 onClick={() => setViewMode('grid')}
-                className="h-12 w-12 rounded-xl"
+                className={viewMode === 'grid' ? 'btn-twitch' : 'text-[hsl(var(--twitch-text-secondary))] hover:bg-[hsl(var(--twitch-bg-tertiary))]'}
               >
                 <LayoutGrid className="h-5 w-5" />
               </Button>
               <Button
-                variant={viewMode === 'list' ? 'default' : 'outline'}
+                variant={viewMode === 'list' ? 'default' : 'ghost'}
                 size="icon"
                 onClick={() => setViewMode('list')}
-                className="h-12 w-12 rounded-xl"
+                className={viewMode === 'list' ? 'btn-twitch' : 'text-[hsl(var(--twitch-text-secondary))] hover:bg-[hsl(var(--twitch-bg-tertiary))]'}
               >
                 <List className="h-5 w-5" />
               </Button>
             </div>
           </div>
           
-          {/* Filter Pills */}
-          <div className="flex gap-2 flex-wrap">
+          {/* Filter Pills - Horizontal Scroll on Mobile */}
+          <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 no-scrollbar">
             <Button
               variant={filterBy === 'all' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setFilterBy('all')}
-              className="rounded-full"
+              className={filterBy === 'all' ? 'btn-twitch rounded-full whitespace-nowrap' : 'btn-twitch-secondary rounded-full whitespace-nowrap'}
             >
-              All Contacts
+              All
             </Button>
             <Button
               variant={filterBy === 'friend' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setFilterBy('friend')}
-              className="rounded-full"
+              className={filterBy === 'friend' ? 'btn-twitch rounded-full whitespace-nowrap' : 'btn-twitch-secondary rounded-full whitespace-nowrap'}
             >
               <Heart className="h-3 w-3 mr-1" />
               Friends
@@ -314,7 +336,7 @@ export default function Home() {
               variant={filterBy === 'colleague' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setFilterBy('colleague')}
-              className="rounded-full"
+              className={filterBy === 'colleague' ? 'btn-twitch rounded-full whitespace-nowrap' : 'btn-twitch-secondary rounded-full whitespace-nowrap'}
             >
               Colleagues
             </Button>
@@ -322,7 +344,7 @@ export default function Home() {
               variant={filterBy === 'family' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setFilterBy('family')}
-              className="rounded-full"
+              className={filterBy === 'family' ? 'btn-twitch rounded-full whitespace-nowrap' : 'btn-twitch-secondary rounded-full whitespace-nowrap'}
             >
               Family
             </Button>
@@ -330,56 +352,68 @@ export default function Home() {
               variant={filterBy === 'networking' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setFilterBy('networking')}
-              className="rounded-full"
+              className={filterBy === 'networking' ? 'btn-twitch rounded-full whitespace-nowrap' : 'btn-twitch-secondary rounded-full whitespace-nowrap'}
             >
-              Networking
+              Network
             </Button>
           </div>
         </div>
 
         {/* Contacts Grid/List */}
         {filteredContacts.length === 0 ? (
-          <Card className="text-center py-16 bg-white/60 backdrop-blur-md border-white/20 shadow-xl">
+          <Card className="text-center py-12 bg-[hsl(var(--twitch-bg-secondary))] border-[hsl(var(--twitch-border))]">
             <CardContent>
-              <div className="bg-gradient-to-r from-purple-100 to-pink-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Users className="h-12 w-12 text-purple-600" />
+              <div className="bg-[hsl(var(--twitch-purple))] w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 twitch-glow">
+                <Users className="h-10 w-10 text-white" />
               </div>
-              <h3 className="text-2xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                {searchQuery ? 'No contacts found' : 'Start Your Social Journey'}
+              <h3 className="text-xl font-bold mb-2 text-white">
+                {searchQuery ? 'No contacts found' : 'Start Your Journey'}
               </h3>
-              <p className="text-gray-600 mb-6 max-w-md mx-auto">
+              <p className="text-[hsl(var(--twitch-text-secondary))] mb-6 max-w-md mx-auto text-sm">
                 {searchQuery 
-                  ? 'Try adjusting your search terms or filters' 
-                  : 'Build meaningful connections by adding your first contact. Every great network starts with a single connection!'
+                  ? 'Try adjusting your search' 
+                  : 'Build meaningful connections by adding your first contact!'
                 }
               </p>
               {!searchQuery && (
                 <Button 
                   onClick={() => setIsAddingContact(true)}
                   size="lg"
-                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                  className="btn-twitch"
                 >
                   <Plus className="h-5 w-5 mr-2" />
-                  Add Your First Contact
+                  Add First Contact
                 </Button>
               )}
             </CardContent>
           </Card>
         ) : (
           <div className={viewMode === 'grid' 
-            ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" 
-            : "space-y-4"
+            ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" 
+            : "space-y-3"
           }>
-            {filteredContacts.map((contact) => (
-              <ContactCard
-                key={contact.id}
-                contact={contact}
-                onClick={() => setSelectedContact(contact)}
-              />
+            {filteredContacts.map((contact, index) => (
+              <div key={contact.id} className="fade-in" style={{ animationDelay: `${index * 50}ms` }}>
+                <ContactCard
+                  contact={contact}
+                  onClick={() => setSelectedContact(contact)}
+                />
+              </div>
             ))}
           </div>
         )}
       </div>
+
+      {/* Add custom styles for no-scrollbar */}
+      <style jsx>{`
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </div>
   );
 }
