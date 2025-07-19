@@ -30,7 +30,13 @@ import {
   Menu,
   X,
   Bell,
-  Settings
+  Settings,
+  Briefcase,
+  Network,
+  MessageSquare,
+  ArrowUpRight,
+  Star,
+  Flame
 } from 'lucide-react';
 
 export default function Home() {
@@ -109,8 +115,8 @@ export default function Home() {
 
   if (selectedContact) {
     return (
-      <div className="min-h-screen bg-[hsl(var(--twitch-bg))] scrollbar-twitch">
-        <div className="container mx-auto py-4 px-4 max-w-4xl">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-950 to-slate-900 scrollbar-twitch">
+        <div className="container mx-auto py-6 px-4 max-w-6xl">
           <ContactDetail
             contact={selectedContact}
             onBack={() => setSelectedContact(null)}
@@ -125,7 +131,7 @@ export default function Home() {
 
   if (isAddingContact) {
     return (
-      <div className="min-h-screen bg-[hsl(var(--twitch-bg))] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-950 to-slate-900 flex items-center justify-center p-4">
         <AddContactForm
           onSubmit={handleAddContact}
           onCancel={() => setIsAddingContact(false)}
@@ -135,170 +141,219 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-[hsl(var(--twitch-bg))] scrollbar-twitch">
-      {/* Mobile-optimized Header */}
-      <header className="bg-[hsl(var(--twitch-bg-secondary))] border-b border-[hsl(var(--twitch-border))] sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-3">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-950 to-slate-900 scrollbar-twitch relative overflow-x-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
+        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-pink-500/10 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
+        <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-blue-500/10 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
+      </div>
+
+      {/* Glass morphism header */}
+      <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/5 border-b border-white/10 shadow-2xl">
+        <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
               <button 
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden tap-target flex items-center justify-center"
+                className="md:hidden tap-target flex items-center justify-center rounded-xl hover:bg-white/10 transition-all duration-200"
               >
-                {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                {mobileMenuOpen ? <X className="h-6 w-6 text-white" /> : <Menu className="h-6 w-6 text-white" />}
               </button>
-              <div className="flex items-center gap-2">
-                <div className="bg-[hsl(var(--twitch-purple))] p-2 rounded twitch-glow">
-                  <Brain className="h-6 w-6 text-white" />
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-3 rounded-2xl shadow-lg">
+                    <Brain className="h-7 w-7 text-white" />
+                  </div>
+                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full animate-pulse border-2 border-white"></div>
                 </div>
-                <h1 className="text-xl md:text-2xl font-bold text-white hidden sm:block">
-                  Social Memory
-                </h1>
+                <div className="hidden sm:block">
+                  <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
+                    Social Memory
+                  </h1>
+                  <p className="text-sm text-gray-400 -mt-1">AI-Powered CRM</p>
+                </div>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            
+            <div className="flex items-center gap-3">
               <Button 
                 size="icon"
                 variant="ghost"
-                className="tap-target text-[hsl(var(--twitch-text-secondary))] hover:text-white hover:bg-[hsl(var(--twitch-bg-tertiary))]"
+                className="relative tap-target text-gray-300 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200"
               >
                 <Bell className="h-5 w-5" />
+                {upcomingReminders.length > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+                    {upcomingReminders.length}
+                  </span>
+                )}
               </Button>
               <Button 
                 onClick={() => setIsAddingContact(true)} 
-                size="sm"
-                className="btn-twitch tap-target flex items-center gap-2"
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold px-6 py-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 tap-target flex items-center gap-2"
               >
                 <Plus className="h-4 w-4" />
-                <span className="hidden sm:inline">Add</span>
+                <span className="hidden sm:inline">Add Contact</span>
+                <span className="sm:hidden">Add</span>
               </Button>
             </div>
           </div>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Enhanced Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-[hsl(var(--twitch-bg-secondary))] border-t border-[hsl(var(--twitch-border))] slide-up">
-            <div className="p-4 space-y-2">
-              <Button variant="ghost" className="w-full justify-start text-left">
-                <Settings className="h-4 w-4 mr-2" />
+          <div className="md:hidden backdrop-blur-xl bg-black/20 border-t border-white/10 slide-up">
+            <div className="p-6 space-y-3">
+              <Button variant="ghost" className="w-full justify-start text-left text-white hover:bg-white/10 rounded-xl py-3">
+                <Settings className="h-5 w-5 mr-3" />
                 Settings
               </Button>
-              <Button variant="ghost" className="w-full justify-start text-left">
-                <Activity className="h-4 w-4 mr-2" />
-                Activity
+              <Button variant="ghost" className="w-full justify-start text-left text-white hover:bg-white/10 rounded-xl py-3">
+                <Activity className="h-5 w-5 mr-3" />
+                Activity Feed
+              </Button>
+              <Button variant="ghost" className="w-full justify-start text-left text-white hover:bg-white/10 rounded-xl py-3">
+                <Star className="h-5 w-5 mr-3" />
+                Favorites
               </Button>
             </div>
           </div>
         )}
       </header>
 
-      <div className="container mx-auto px-4 py-4 max-w-7xl">
-        {/* Stats Cards - Mobile Optimized */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-          <Card className="bg-[hsl(var(--twitch-bg-secondary))] border-[hsl(var(--twitch-border))] hover:border-[hsl(var(--twitch-purple))] transition-all duration-200 scale-in">
-            <CardHeader className="p-4">
-              <CardDescription className="text-[hsl(var(--twitch-text-muted))] text-xs">Total Contacts</CardDescription>
-              <CardTitle className="text-2xl font-bold text-[hsl(var(--twitch-purple))]">
-                {contacts.length}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-4 pt-0">
-              <div className="flex items-center justify-between">
-                <Users className="h-4 w-4 text-[hsl(var(--twitch-purple))]" />
-                <span className="text-xs text-green-500 font-semibold">+12%</span>
+      <div className="container mx-auto px-6 py-8 max-w-7xl relative z-10">
+        {/* Hero Stats Section */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <Card className="bg-gradient-to-br from-purple-900/50 to-purple-800/30 backdrop-blur-xl border border-purple-500/20 hover:border-purple-400/40 transition-all duration-300 group">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="bg-purple-500/20 p-3 rounded-xl group-hover:bg-purple-500/30 transition-colors">
+                  <Users className="h-6 w-6 text-purple-300" />
+                </div>
+                <div className="text-right">
+                  <Badge className="bg-green-500/20 text-green-300 border-green-500/30">
+                    +12%
+                  </Badge>
+                </div>
+              </div>
+              <div>
+                <p className="text-gray-400 text-sm mb-1">Total Contacts</p>
+                <p className="text-3xl font-bold text-white">{contacts.length}</p>
               </div>
             </CardContent>
           </Card>
           
-          <Card className="bg-[hsl(var(--twitch-bg-secondary))] border-[hsl(var(--twitch-border))] hover:border-[hsl(var(--twitch-purple))] transition-all duration-200 scale-in">
-            <CardHeader className="p-4">
-              <CardDescription className="text-[hsl(var(--twitch-text-muted))] text-xs">Reminders</CardDescription>
-              <CardTitle className="text-2xl font-bold text-orange-500">
-                {upcomingReminders.length}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-4 pt-0">
-              <div className="flex items-center justify-between">
-                <Clock className="h-4 w-4 text-orange-500 twitch-pulse" />
-                <span className="text-xs text-orange-500 font-semibold">This week</span>
+          <Card className="bg-gradient-to-br from-orange-900/50 to-orange-800/30 backdrop-blur-xl border border-orange-500/20 hover:border-orange-400/40 transition-all duration-300 group">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="bg-orange-500/20 p-3 rounded-xl group-hover:bg-orange-500/30 transition-colors">
+                  <Clock className="h-6 w-6 text-orange-300" />
+                </div>
+                <div className="text-right">
+                  <Badge className="bg-orange-500/20 text-orange-300 border-orange-500/30">
+                    This week
+                  </Badge>
+                </div>
+              </div>
+              <div>
+                <p className="text-gray-400 text-sm mb-1">Reminders</p>
+                <p className="text-3xl font-bold text-white">{upcomingReminders.length}</p>
               </div>
             </CardContent>
           </Card>
           
-          <Card className="bg-[hsl(var(--twitch-bg-secondary))] border-[hsl(var(--twitch-border))] hover:border-[hsl(var(--twitch-purple))] transition-all duration-200 scale-in hidden md:block">
-            <CardHeader className="p-4">
-              <CardDescription className="text-[hsl(var(--twitch-text-muted))] text-xs">Conversations</CardDescription>
-              <CardTitle className="text-2xl font-bold text-green-500">
-                {contacts.reduce((sum, c) => sum + c.conversations.length, 0)}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-4 pt-0">
-              <div className="flex items-center justify-between">
-                <Activity className="h-4 w-4 text-green-500" />
-                <span className="text-xs text-green-500 font-semibold">Active</span>
+          <Card className="bg-gradient-to-br from-green-900/50 to-green-800/30 backdrop-blur-xl border border-green-500/20 hover:border-green-400/40 transition-all duration-300 group hidden lg:block">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="bg-green-500/20 p-3 rounded-xl group-hover:bg-green-500/30 transition-colors">
+                  <MessageSquare className="h-6 w-6 text-green-300" />
+                </div>
+                <div className="text-right">
+                  <Badge className="bg-green-500/20 text-green-300 border-green-500/30">
+                    Active
+                  </Badge>
+                </div>
+              </div>
+              <div>
+                <p className="text-gray-400 text-sm mb-1">Conversations</p>
+                <p className="text-3xl font-bold text-white">
+                  {contacts.reduce((sum, c) => sum + c.conversations.length, 0)}
+                </p>
               </div>
             </CardContent>
           </Card>
           
-          <Card className="bg-[hsl(var(--twitch-bg-secondary))] border-[hsl(var(--twitch-border))] hover:border-[hsl(var(--twitch-purple))] transition-all duration-200 scale-in hidden md:block">
-            <CardHeader className="p-4">
-              <CardDescription className="text-[hsl(var(--twitch-text-muted))] text-xs">Engagement</CardDescription>
-              <CardTitle className="text-2xl font-bold text-blue-500">
-                92%
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-4 pt-0">
-              <div className="flex items-center justify-between">
-                <Target className="h-4 w-4 text-blue-500" />
-                <span className="text-xs text-blue-500 font-semibold">Great!</span>
+          <Card className="bg-gradient-to-br from-blue-900/50 to-blue-800/30 backdrop-blur-xl border border-blue-500/20 hover:border-blue-400/40 transition-all duration-300 group hidden lg:block">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="bg-blue-500/20 p-3 rounded-xl group-hover:bg-blue-500/30 transition-colors">
+                  <TrendingUp className="h-6 w-6 text-blue-300" />
+                </div>
+                <div className="text-right">
+                  <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30">
+                    Excellent
+                  </Badge>
+                </div>
+              </div>
+              <div>
+                <p className="text-gray-400 text-sm mb-1">Engagement</p>
+                <p className="text-3xl font-bold text-white">92%</p>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* AI Insights Section - Twitch Style */}
-        <Card className="bg-[hsl(var(--twitch-purple))] text-white mb-6 border-0 twitch-glow">
-          <CardContent className="p-4">
+        {/* AI Insights Banner */}
+        <Card className="bg-gradient-to-r from-purple-600 to-pink-600 text-white mb-8 border-0 shadow-2xl hover:shadow-purple-500/25 transition-all duration-300">
+          <CardContent className="p-6">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="bg-white/20 p-2 rounded">
-                  <Zap className="h-5 w-5 twitch-bounce" />
+              <div className="flex items-center gap-4">
+                <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+                  <Flame className="h-6 w-6 animate-pulse" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold">AI Insights</h3>
-                  <p className="text-sm text-white/80">
-                    3 contacts need attention
+                  <h3 className="text-xl font-bold mb-1">AI Insights Ready</h3>
+                  <p className="text-white/80">
+                    {contacts.length > 0 ? `${Math.min(3, contacts.length)} contacts need attention` : 'Add contacts to get AI insights'}
                   </p>
                 </div>
               </div>
-              <Button variant="ghost" size="sm" className="text-white hover:bg-white/20">
-                View
-                <ChevronRight className="h-4 w-4 ml-1" />
+              <Button 
+                variant="ghost" 
+                className="text-white hover:bg-white/20 rounded-xl px-4 py-2 font-semibold"
+                disabled={contacts.length === 0}
+              >
+                View All
+                <ArrowUpRight className="h-4 w-4 ml-2" />
               </Button>
             </div>
           </CardContent>
         </Card>
 
-        {/* Search and Filter Bar - Mobile Optimized */}
-        <div className="mb-6 space-y-3">
-          <div className="flex gap-2 items-center">
+        {/* Enhanced Search and Filter Section */}
+        <div className="mb-8 space-y-6">
+          <div className="flex gap-4 items-center">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[hsl(var(--twitch-text-muted))]" />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
               <Input
                 type="text"
-                placeholder="Search contacts..."
+                placeholder="Search contacts by name, company, or notes..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-3 bg-[hsl(var(--twitch-bg-secondary))] border-[hsl(var(--twitch-border))] text-white placeholder:text-[hsl(var(--twitch-text-muted))] focus:border-[hsl(var(--twitch-purple))] rounded"
+                className="pl-12 pr-4 py-4 bg-black/20 backdrop-blur-xl border border-white/10 text-white placeholder:text-gray-400 focus:border-purple-400/50 rounded-xl text-lg"
               />
             </div>
-            <div className="flex gap-1">
+            <div className="flex gap-2">
               <Button
                 variant={viewMode === 'grid' ? 'default' : 'ghost'}
                 size="icon"
                 onClick={() => setViewMode('grid')}
-                className={viewMode === 'grid' ? 'btn-twitch' : 'text-[hsl(var(--twitch-text-secondary))] hover:bg-[hsl(var(--twitch-bg-tertiary))]'}
+                className={`rounded-xl transition-all duration-200 ${
+                  viewMode === 'grid' 
+                    ? 'bg-purple-600 hover:bg-purple-700 text-white' 
+                    : 'text-gray-300 hover:text-white hover:bg-white/10'
+                }`}
               >
                 <LayoutGrid className="h-5 w-5" />
               </Button>
@@ -306,94 +361,88 @@ export default function Home() {
                 variant={viewMode === 'list' ? 'default' : 'ghost'}
                 size="icon"
                 onClick={() => setViewMode('list')}
-                className={viewMode === 'list' ? 'btn-twitch' : 'text-[hsl(var(--twitch-text-secondary))] hover:bg-[hsl(var(--twitch-bg-tertiary))]'}
+                className={`rounded-xl transition-all duration-200 ${
+                  viewMode === 'list' 
+                    ? 'bg-purple-600 hover:bg-purple-700 text-white' 
+                    : 'text-gray-300 hover:text-white hover:bg-white/10'
+                }`}
               >
                 <List className="h-5 w-5" />
               </Button>
             </div>
           </div>
           
-          {/* Filter Pills - Horizontal Scroll on Mobile */}
-          <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 no-scrollbar">
-            <Button
-              variant={filterBy === 'all' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilterBy('all')}
-              className={filterBy === 'all' ? 'btn-twitch rounded-full whitespace-nowrap' : 'btn-twitch-secondary rounded-full whitespace-nowrap'}
-            >
-              All
-            </Button>
-            <Button
-              variant={filterBy === 'friend' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilterBy('friend')}
-              className={filterBy === 'friend' ? 'btn-twitch rounded-full whitespace-nowrap' : 'btn-twitch-secondary rounded-full whitespace-nowrap'}
-            >
-              <Heart className="h-3 w-3 mr-1" />
-              Friends
-            </Button>
-            <Button
-              variant={filterBy === 'colleague' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilterBy('colleague')}
-              className={filterBy === 'colleague' ? 'btn-twitch rounded-full whitespace-nowrap' : 'btn-twitch-secondary rounded-full whitespace-nowrap'}
-            >
-              Colleagues
-            </Button>
-            <Button
-              variant={filterBy === 'family' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilterBy('family')}
-              className={filterBy === 'family' ? 'btn-twitch rounded-full whitespace-nowrap' : 'btn-twitch-secondary rounded-full whitespace-nowrap'}
-            >
-              Family
-            </Button>
-            <Button
-              variant={filterBy === 'networking' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilterBy('networking')}
-              className={filterBy === 'networking' ? 'btn-twitch rounded-full whitespace-nowrap' : 'btn-twitch-secondary rounded-full whitespace-nowrap'}
-            >
-              Network
-            </Button>
+          {/* Enhanced Filter Pills */}
+          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-twitch">
+            {[
+              { key: 'all', label: 'All Contacts', icon: Users },
+              { key: 'friend', label: 'Friends', icon: Heart },
+              { key: 'colleague', label: 'Colleagues', icon: Briefcase },
+              { key: 'family', label: 'Family', icon: Users },
+              { key: 'networking', label: 'Network', icon: Network }
+            ].map(({ key, label, icon: Icon }) => (
+              <Button
+                key={key}
+                variant={filterBy === key ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setFilterBy(key)}
+                className={`rounded-full whitespace-nowrap px-6 py-2 font-semibold transition-all duration-200 ${
+                  filterBy === key
+                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white border-0 shadow-lg'
+                    : 'bg-black/20 backdrop-blur-xl text-gray-300 border-white/10 hover:border-purple-400/50 hover:text-white hover:bg-white/10'
+                }`}
+              >
+                <Icon className="h-4 w-4 mr-2" />
+                {label}
+              </Button>
+            ))}
           </div>
         </div>
 
         {/* Contacts Grid/List */}
         {filteredContacts.length === 0 ? (
-          <Card className="text-center py-12 bg-[hsl(var(--twitch-bg-secondary))] border-[hsl(var(--twitch-border))]">
+          <Card className="text-center py-16 bg-black/20 backdrop-blur-xl border border-white/10 rounded-2xl">
             <CardContent>
-              <div className="bg-[hsl(var(--twitch-purple))] w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 twitch-glow">
-                <Users className="h-10 w-10 text-white" />
+              <div className="relative inline-block mb-6">
+                <div className="bg-gradient-to-r from-purple-600 to-pink-600 w-24 h-24 rounded-2xl flex items-center justify-center mx-auto shadow-2xl">
+                  <Users className="h-12 w-12 text-white" />
+                </div>
+                <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center">
+                  <Sparkles className="h-4 w-4 text-white" />
+                </div>
               </div>
-              <h3 className="text-xl font-bold mb-2 text-white">
-                {searchQuery ? 'No contacts found' : 'Start Your Journey'}
+              <h3 className="text-2xl font-bold mb-3 text-white">
+                {searchQuery ? 'No contacts found' : 'Start Building Connections'}
               </h3>
-              <p className="text-[hsl(var(--twitch-text-secondary))] mb-6 max-w-md mx-auto text-sm">
+              <p className="text-gray-400 mb-8 max-w-md mx-auto leading-relaxed">
                 {searchQuery 
-                  ? 'Try adjusting your search' 
-                  : 'Build meaningful connections by adding your first contact!'
+                  ? 'Try adjusting your search terms or browse all contacts' 
+                  : 'Transform your relationships with AI-powered insights. Add your first contact to begin!'
                 }
               </p>
               {!searchQuery && (
                 <Button 
                   onClick={() => setIsAddingContact(true)}
                   size="lg"
-                  className="btn-twitch"
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
                 >
                   <Plus className="h-5 w-5 mr-2" />
-                  Add First Contact
+                  Add Your First Contact
                 </Button>
               )}
             </CardContent>
           </Card>
         ) : (
           <div className={viewMode === 'grid' 
-            ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" 
-            : "space-y-3"
+            ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" 
+            : "space-y-4"
           }>
             {filteredContacts.map((contact, index) => (
-              <div key={contact.id} className="fade-in" style={{ animationDelay: `${index * 50}ms` }}>
+              <div 
+                key={contact.id} 
+                className="fade-in transform hover:scale-[1.02] transition-all duration-200" 
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
                 <ContactCard
                   contact={contact}
                   onClick={() => setSelectedContact(contact)}
@@ -403,17 +452,6 @@ export default function Home() {
           </div>
         )}
       </div>
-
-      {/* Add custom styles for no-scrollbar */}
-      <style jsx>{`
-        .no-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-        .no-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
     </div>
   );
 }

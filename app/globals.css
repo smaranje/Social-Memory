@@ -2,44 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Roobert:wght@400;500;600;700;900&family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Geist:wght@400;500;600;700;800&display=swap');
 
 @layer base {
   :root {
-    /* Twitch-inspired color palette */
-    --twitch-purple: 145 70% 52%;
-    --twitch-purple-dark: 145 70% 42%;
-    --twitch-purple-light: 145 70% 62%;
-    --twitch-purple-hover: 145 70% 47%;
-    --twitch-bg: 0 0% 7%;
-    --twitch-bg-secondary: 0 0% 11%;
-    --twitch-bg-tertiary: 0 0% 15%;
-    --twitch-text: 0 0% 100%;
-    --twitch-text-secondary: 0 0% 75%;
-    --twitch-text-muted: 0 0% 50%;
-    --twitch-border: 0 0% 20%;
-    --twitch-accent: 340 82% 52%;
+    /* Modern dark theme color palette */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.1%;
+    --radius: 0.75rem;
     
-    --background: var(--twitch-bg);
-    --foreground: var(--twitch-text);
-    --card: var(--twitch-bg-secondary);
-    --card-foreground: var(--twitch-text);
-    --popover: var(--twitch-bg-secondary);
-    --popover-foreground: var(--twitch-text);
-    --primary: var(--twitch-purple);
-    --primary-foreground: var(--twitch-text);
-    --secondary: var(--twitch-bg-tertiary);
-    --secondary-foreground: var(--twitch-text);
-    --muted: var(--twitch-bg-tertiary);
-    --muted-foreground: var(--twitch-text-muted);
-    --accent: var(--twitch-accent);
-    --accent-foreground: var(--twitch-text);
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: var(--twitch-text);
-    --border: var(--twitch-border);
-    --input: var(--twitch-bg-tertiary);
-    --ring: var(--twitch-purple);
-    --radius: 0.25rem;
+    /* Custom gradients */
+    --gradient-purple: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-pink: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --gradient-blue: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
   }
 }
 
@@ -47,51 +39,53 @@
   * {
     @apply border-border;
   }
+  
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Roobert', 'Inter', sans-serif;
+    font-family: 'Geist', 'Inter', sans-serif;
     font-weight: 700;
+    letter-spacing: -0.025em;
   }
 }
 
-/* Twitch-style animations */
-@keyframes twitch-pulse {
-  0%, 100% {
-    opacity: 1;
+/* Enhanced animations */
+@keyframes blob {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(147, 51, 234, 0.3), 0 0 40px rgba(147, 51, 234, 0.1);
   }
-  50% {
-    opacity: 0.5;
+  50% { 
+    box-shadow: 0 0 30px rgba(147, 51, 234, 0.5), 0 0 60px rgba(147, 51, 234, 0.2);
   }
 }
 
-@keyframes twitch-bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes twitch-glow {
-  0%, 100% {
-    box-shadow: 0 0 20px hsl(var(--twitch-purple) / 0.5);
-  }
-  50% {
-    box-shadow: 0 0 40px hsl(var(--twitch-purple) / 0.8);
-  }
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
 @keyframes slide-up {
   from {
-    transform: translateY(100%);
+    transform: translateY(20px);
     opacity: 0;
   }
   to {
@@ -101,17 +95,13 @@
 }
 
 @keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes scale-in {
   from {
-    transform: scale(0.9);
+    transform: scale(0.95);
     opacity: 0;
   }
   to {
@@ -120,119 +110,223 @@
   }
 }
 
-/* Twitch-style utilities */
+@keyframes bounce-in {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Animation utilities */
 @layer utilities {
-  .twitch-purple {
-    background-color: hsl(var(--twitch-purple));
+  .animate-blob {
+    animation: blob 7s infinite;
   }
   
-  .twitch-purple-hover:hover {
-    background-color: hsl(var(--twitch-purple-hover));
+  .animation-delay-2000 {
+    animation-delay: 2s;
   }
   
-  .twitch-glow {
-    animation: twitch-glow 2s ease-in-out infinite;
+  .animation-delay-4000 {
+    animation-delay: 4s;
   }
   
-  .twitch-bounce {
-    animation: twitch-bounce 1s ease-in-out infinite;
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
   }
   
-  .twitch-pulse {
-    animation: twitch-pulse 2s ease-in-out infinite;
+  .animate-glow {
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+  
+  .animate-shimmer {
+    animation: shimmer 2s linear infinite;
   }
   
   .slide-up {
-    animation: slide-up 0.3s ease-out;
+    animation: slide-up 0.4s ease-out;
   }
   
   .fade-in {
-    animation: fade-in 0.3s ease-out;
+    animation: fade-in 0.6s ease-out;
   }
   
   .scale-in {
-    animation: scale-in 0.3s ease-out;
+    animation: scale-in 0.4s ease-out;
+  }
+  
+  .bounce-in {
+    animation: bounce-in 0.6s ease-out;
   }
 }
 
-/* Twitch-style scrollbar */
+/* Glass morphism effects */
+@layer utilities {
+  .glass {
+    @apply backdrop-blur-xl bg-white/5 border border-white/10;
+  }
+  
+  .glass-dark {
+    @apply backdrop-blur-xl bg-black/20 border border-white/10;
+  }
+  
+  .glass-purple {
+    @apply backdrop-blur-xl bg-purple-500/10 border border-purple-500/20;
+  }
+}
+
+/* Enhanced scrollbar */
 @layer utilities {
   .scrollbar-twitch {
     scrollbar-width: thin;
-    scrollbar-color: hsl(var(--twitch-purple)) hsl(var(--twitch-bg-secondary));
+    scrollbar-color: rgb(147 51 234) transparent;
   }
   
   .scrollbar-twitch::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
   }
   
   .scrollbar-twitch::-webkit-scrollbar-track {
-    @apply bg-[hsl(var(--twitch-bg-secondary))] rounded-full;
+    @apply bg-transparent;
   }
   
   .scrollbar-twitch::-webkit-scrollbar-thumb {
-    @apply bg-[hsl(var(--twitch-purple))] rounded-full;
+    @apply bg-gradient-to-b from-purple-500 to-pink-500 rounded-full;
   }
   
   .scrollbar-twitch::-webkit-scrollbar-thumb:hover {
-    @apply bg-[hsl(var(--twitch-purple-hover))];
+    @apply bg-gradient-to-b from-purple-400 to-pink-400;
   }
 }
 
-/* Twitch-style buttons */
+/* Modern button styles */
 @layer components {
-  .btn-twitch {
-    @apply bg-[hsl(var(--twitch-purple))] text-white font-semibold px-4 py-2 rounded
-           hover:bg-[hsl(var(--twitch-purple-hover))] transition-all duration-200
-           active:scale-95 transform;
+  .btn-modern {
+    @apply relative overflow-hidden bg-gradient-to-r from-purple-600 to-pink-600 
+           text-white font-semibold px-6 py-3 rounded-xl
+           transition-all duration-300 shadow-lg hover:shadow-xl
+           hover:scale-105 active:scale-95;
   }
   
-  .btn-twitch-secondary {
-    @apply bg-[hsl(var(--twitch-bg-tertiary))] text-white font-semibold px-4 py-2 rounded
-           hover:bg-[hsl(var(--twitch-bg-secondary))] transition-all duration-200
-           active:scale-95 transform border border-[hsl(var(--twitch-border))];
+  .btn-modern::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-white/20 to-transparent 
+           transform -skew-x-12 -translate-x-full transition-transform duration-700;
+  }
+  
+  .btn-modern:hover::before {
+    @apply translate-x-full;
+  }
+  
+  .btn-glass {
+    @apply backdrop-blur-xl bg-white/10 border border-white/20 
+           text-white font-semibold px-4 py-2 rounded-xl
+           hover:bg-white/20 transition-all duration-200
+           hover:border-white/30;
   }
 }
 
-/* Mobile-optimized tap targets */
+/* Card enhancements */
+@layer components {
+  .card-modern {
+    @apply bg-gradient-to-br from-slate-900/50 to-slate-800/30 
+           backdrop-blur-xl border border-white/10 rounded-2xl
+           hover:border-white/20 transition-all duration-300
+           shadow-lg hover:shadow-xl;
+  }
+  
+  .card-gradient-purple {
+    @apply bg-gradient-to-br from-purple-900/50 to-purple-800/30
+           border-purple-500/20 hover:border-purple-400/40;
+  }
+  
+  .card-gradient-blue {
+    @apply bg-gradient-to-br from-blue-900/50 to-blue-800/30
+           border-blue-500/20 hover:border-blue-400/40;
+  }
+  
+  .card-gradient-green {
+    @apply bg-gradient-to-br from-green-900/50 to-green-800/30
+           border-green-500/20 hover:border-green-400/40;
+  }
+  
+  .card-gradient-orange {
+    @apply bg-gradient-to-br from-orange-900/50 to-orange-800/30
+           border-orange-500/20 hover:border-orange-400/40;
+  }
+}
+
+/* Typography improvements */
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent;
+  }
+  
+  .text-gradient-blue {
+    @apply bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent;
+  }
+  
+  .text-glow {
+    text-shadow: 0 0 20px rgba(147, 51, 234, 0.5);
+  }
+}
+
+/* Mobile optimizations */
 @layer utilities {
   .tap-target {
-    @apply min-h-[44px] min-w-[44px];
+    @apply min-h-[44px] min-w-[44px] touch-manipulation;
   }
 }
 
-/* Enhanced focus states for mobile */
+/* Focus states */
 @layer utilities {
-  input:focus,
-  textarea:focus,
-  select:focus,
-  button:focus {
-    @apply outline-none ring-2 ring-[hsl(var(--twitch-purple))] ring-offset-2 ring-offset-[hsl(var(--twitch-bg))];
+  .focus-modern {
+    @apply focus:outline-none focus:ring-2 focus:ring-purple-500/50 
+           focus:ring-offset-2 focus:ring-offset-transparent;
   }
 }
 
-/* Smooth transitions */
+/* Hide scrollbar utility */
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Smooth transitions for all interactive elements */
 @layer base {
   button, a, input, textarea, select {
     @apply transition-all duration-200;
   }
 }
 
-/* Mobile-specific styles */
-@media (max-width: 768px) {
-  .mobile-card {
-    @apply rounded-lg shadow-lg;
-  }
-  
-  .mobile-padding {
-    @apply px-4 py-3;
-  }
-}
-
-/* Remove gradient blob animations for mobile performance */
+/* Mobile performance optimizations */
 @media (max-width: 768px) {
   .animate-blob {
+    animation: none;
+  }
+  
+  .animate-float {
+    animation: none;
+  }
+  
+  .animate-glow {
     animation: none;
   }
 }

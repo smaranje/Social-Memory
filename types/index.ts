@@ -4,6 +4,7 @@ export interface Contact {
   relationship: 'friend' | 'colleague' | 'family' | 'romantic' | 'acquaintance' | 'networking' | 'other';
   howWeMet: string;
   whereWeMet: string;
+  company?: string;
   firstMetDate: string;
   lastContactDate: string;
   tags: string[];
