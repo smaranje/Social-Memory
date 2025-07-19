@@ -23,7 +23,15 @@ import {
   MoreVertical,
   Bell,
   Sparkles,
-  Circle
+  Circle,
+  Building2,
+  Heart,
+  Briefcase,
+  Users,
+  Network,
+  UserCircle,
+  Save,
+  X,
 } from 'lucide-react';
 import { format, formatDistanceToNow } from 'date-fns';
 
@@ -35,6 +43,26 @@ interface ContactDetailProps {
   aiInsights?: string[];
 }
 
+const relationshipIcons = {
+  friend: Heart,
+  colleague: Briefcase,
+  family: Users,
+  networking: Network,
+  acquaintance: UserCircle,
+  romantic: Heart,
+  other: User
+};
+
+const relationshipColors = {
+  friend: 'from-pink-500 to-rose-500',
+  colleague: 'from-blue-500 to-indigo-500',
+  family: 'from-purple-500 to-violet-500',
+  networking: 'from-green-500 to-emerald-500',
+  acquaintance: 'from-gray-500 to-slate-500',
+  romantic: 'from-red-500 to-pink-500',
+  other: 'from-amber-500 to-orange-500'
+};
+
 export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights }: ContactDetailProps) {
   const [isAddingConversation, setIsAddingConversation] = useState(false);
   const [conversationNotes, setConversationNotes] = useState('');
@@ -42,6 +70,9 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
   const [reminderTitle, setReminderTitle] = useState('');
   const [reminderDate, setReminderDate] = useState('');
   const [reminderDescription, setReminderDescription] = useState('');
+
+  const RelationshipIcon = relationshipIcons[contact.relationship] || User;
+  const gradientColor = relationshipColors[contact.relationship] || 'from-gray-500 to-slate-500';
 
   const handleAddConversation = () => {
     if (!conversationNotes.trim()) return;
@@ -94,22 +125,24 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
     setIsAddingReminder(false);
   };
 
+  const upcomingReminders = contact.reminders.filter(r => !r.completed);
+
   return (
-    <div className="space-y-4 pb-20">
-      {/* Mobile-optimized header */}
-      <div className="flex items-center justify-between bg-[hsl(var(--twitch-bg-secondary))] -mx-4 px-4 py-3 sticky top-0 z-10 border-b border-[hsl(var(--twitch-border))]">
+    <div className="space-y-6 pb-8">
+      {/* Header */}
+      <div className="flex items-center justify-between bg-white/80 backdrop-blur-sm -mx-4 px-4 py-4 sticky top-0 z-10 border-b border-white/20 shadow-sm">
         <Button 
           variant="ghost" 
           onClick={onBack} 
-          className="text-[hsl(var(--twitch-text-secondary))] hover:text-white hover:bg-[hsl(var(--twitch-bg-tertiary))] -ml-2"
+          className="text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl"
         >
           <ChevronLeft className="h-5 w-5 mr-1" />
-          Back
+          Back to Contacts
         </Button>
         <Button 
           variant="ghost" 
           size="icon"
-          className="text-[hsl(var(--twitch-text-secondary))] hover:text-red-500 hover:bg-[hsl(var(--twitch-bg-tertiary))]"
+          className="text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl"
           onClick={() => {
             if (confirm('Are you sure you want to delete this contact?')) {
               onDelete(contact.id);
@@ -120,74 +153,116 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
         </Button>
       </div>
 
-      {/* Contact header card */}
-      <Card className="bg-[hsl(var(--twitch-bg-secondary))] border-[hsl(var(--twitch-border))]">
-        <CardHeader>
-          <div className="space-y-3">
-            <div>
-              <CardTitle className="text-2xl text-white mb-2">{contact.name}</CardTitle>
-              <div className="flex flex-wrap gap-3 text-sm">
-                <span className="flex items-center gap-1 text-[hsl(var(--twitch-text-secondary))]">
-                  <User className="h-4 w-4 text-[hsl(var(--twitch-purple))]" />
-                  {contact.relationship}
-                </span>
-                <span className="flex items-center gap-1 text-[hsl(var(--twitch-text-secondary))]">
-                  <MapPin className="h-4 w-4 text-[hsl(var(--twitch-purple))]" />
-                  {contact.whereWeMet}
-                </span>
-                <span className="flex items-center gap-1 text-[hsl(var(--twitch-text-secondary))]">
-                  <Calendar className="h-4 w-4 text-[hsl(var(--twitch-purple))]" />
-                  {format(new Date(contact.firstMetDate), 'MMM d, yyyy')}
-                </span>
+      {/* Contact Header Card */}
+      <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-xl overflow-hidden">
+        <CardHeader className={`bg-gradient-to-r ${gradientColor} text-white relative overflow-hidden`}>
+          <div className="absolute inset-0 bg-black/10"></div>
+          <div className="relative">
+            <div className="flex items-start justify-between">
+              <div className="flex items-center gap-4">
+                <div className="bg-white/20 p-4 rounded-2xl backdrop-blur-sm">
+                  <RelationshipIcon className="h-8 w-8" />
+                </div>
+                <div>
+                  <CardTitle className="text-3xl font-bold mb-2">{contact.name}</CardTitle>
+                  <div className="flex flex-wrap gap-4 text-sm text-white/90">
+                    <span className="flex items-center gap-2">
+                      <RelationshipIcon className="h-4 w-4" />
+                      {contact.relationship}
+                    </span>
+                    {contact.company && (
+                      <span className="flex items-center gap-2">
+                        <Building2 className="h-4 w-4" />
+                        {contact.company}
+                      </span>
+                    )}
+                    <span className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4" />
+                      Met {format(new Date(contact.firstMetDate), 'MMM d, yyyy')}
+                    </span>
+                  </div>
+                </div>
               </div>
+              <Badge className="bg-white/20 text-white border-0 text-sm px-3 py-2">
+                {contact.conversations.length} conversations
+              </Badge>
             </div>
           </div>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <h3 className="font-semibold mb-2 text-white text-sm uppercase tracking-wide">How we met</h3>
-            <p className="text-[hsl(var(--twitch-text-secondary))] text-sm">{contact.howWeMet}</p>
+        
+        <CardContent className="p-6 space-y-6">
+          {/* Where We Met */}
+          <div className="bg-blue-50 p-4 rounded-xl">
+            <div className="flex items-center gap-2 mb-2">
+              <MapPin className="h-5 w-5 text-blue-600" />
+              <h3 className="font-semibold text-gray-900">Where We Met</h3>
+            </div>
+            <p className="text-gray-700">{contact.whereWeMet}</p>
           </div>
+
+          {/* How We Met */}
+          {contact.howWeMet && (
+            <div className="bg-purple-50 p-4 rounded-xl">
+              <div className="flex items-center gap-2 mb-2">
+                <Sparkles className="h-5 w-5 text-purple-600" />
+                <h3 className="font-semibold text-gray-900">How We Met</h3>
+              </div>
+              <p className="text-gray-700">{contact.howWeMet}</p>
+            </div>
+          )}
           
+          {/* Notes */}
           {contact.notes && (
-            <div>
-              <h3 className="font-semibold mb-2 text-white text-sm uppercase tracking-wide">Notes</h3>
-              <p className="text-[hsl(var(--twitch-text-secondary))] whitespace-pre-wrap text-sm">{contact.notes}</p>
+            <div className="bg-green-50 p-4 rounded-xl">
+              <div className="flex items-center gap-2 mb-2">
+                <User className="h-5 w-5 text-green-600" />
+                <h3 className="font-semibold text-gray-900">Notes</h3>
+              </div>
+              <p className="text-gray-700 whitespace-pre-wrap">{contact.notes}</p>
             </div>
           )}
 
-          <div>
-            <h3 className="font-semibold mb-2 text-white text-sm uppercase tracking-wide">Tags</h3>
-            <div className="flex flex-wrap gap-2">
-              {contact.tags.map((tag, index) => (
-                <Badge 
-                  key={index} 
-                  variant="secondary"
-                  className="bg-[hsl(var(--twitch-bg-tertiary))] text-[hsl(var(--twitch-text-secondary))] border-[hsl(var(--twitch-border))]"
-                >
-                  {tag}
-                </Badge>
-              ))}
+          {/* Tags */}
+          {contact.tags.length > 0 && (
+            <div>
+                             <div className="flex items-center gap-2 mb-3">
+                 <div className="bg-orange-100 p-2 rounded-lg">
+                   <User className="h-4 w-4 text-orange-600" />
+                 </div>
+                 <h3 className="font-semibold text-gray-900">Tags</h3>
+               </div>
+              <div className="flex flex-wrap gap-2">
+                {contact.tags.map((tag, index) => (
+                  <Badge 
+                    key={index} 
+                    className="bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 border-0 px-3 py-1 hover:from-blue-200 hover:to-indigo-200 transition-colors"
+                  >
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </CardContent>
       </Card>
 
-      {/* AI Insights - Twitch style */}
+      {/* AI Insights */}
       {aiInsights && aiInsights.length > 0 && (
-        <Card className="bg-[hsl(var(--twitch-purple))] border-0 twitch-glow">
+        <Card className="bg-gradient-to-r from-purple-500 to-pink-500 border-0 shadow-xl text-white overflow-hidden">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-white">
-              <Sparkles className="h-5 w-5 twitch-bounce" />
+            <CardTitle className="flex items-center gap-3">
+              <div className="bg-white/20 p-2 rounded-lg">
+                <Brain className="h-6 w-6" />
+              </div>
               AI Insights
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               {aiInsights.map((insight, index) => (
-                <li key={index} className="flex items-start gap-2">
-                  <Circle className="h-2 w-2 fill-current text-white mt-1.5 flex-shrink-0" />
-                  <span className="text-sm text-white/90">{insight}</span>
+                <li key={index} className="flex items-start gap-3">
+                  <Sparkles className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                  <span className="text-white/95">{insight}</span>
                 </li>
               ))}
             </ul>
@@ -196,18 +271,20 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
       )}
 
       {/* Conversations */}
-      <Card className="bg-[hsl(var(--twitch-bg-secondary))] border-[hsl(var(--twitch-border))]">
+      <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-xl">
         <CardHeader>
           <div className="flex justify-between items-center">
-            <CardTitle className="flex items-center gap-2 text-white">
-              <MessageSquare className="h-5 w-5 text-[hsl(var(--twitch-purple))]" />
+            <CardTitle className="flex items-center gap-3">
+              <div className="bg-gradient-to-r from-green-500 to-emerald-500 p-2 rounded-lg">
+                <MessageSquare className="h-6 w-6 text-white" />
+              </div>
               Conversations
             </CardTitle>
             <Button 
               size="sm" 
               onClick={() => setIsAddingConversation(true)}
               disabled={isAddingConversation}
-              className="btn-twitch"
+              className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
             >
               <Plus className="h-4 w-4 mr-1" />
               Add
@@ -216,16 +293,21 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
         </CardHeader>
         <CardContent>
           {isAddingConversation && (
-            <div className="mb-4 space-y-3 p-4 bg-[hsl(var(--twitch-bg))] border border-[hsl(var(--twitch-border))] rounded">
+            <div className="mb-6 space-y-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
               <Textarea
-                placeholder="What did you talk about?"
+                placeholder="What did you talk about? Any important details or follow-ups?"
                 value={conversationNotes}
                 onChange={(e) => setConversationNotes(e.target.value)}
-                rows={3}
-                className="bg-[hsl(var(--twitch-bg-tertiary))] border-[hsl(var(--twitch-border))] text-white placeholder:text-[hsl(var(--twitch-text-muted))]"
+                rows={4}
+                className="bg-white border-0 shadow-inner text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-green-500/20 rounded-xl"
               />
-              <div className="flex gap-2">
-                <Button size="sm" onClick={handleAddConversation} className="btn-twitch">
+              <div className="flex gap-3">
+                <Button 
+                  size="sm" 
+                  onClick={handleAddConversation}
+                  className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white rounded-xl px-6"
+                >
+                  <Save className="h-4 w-4 mr-2" />
                   Save
                 </Button>
                 <Button 
@@ -235,29 +317,34 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
                     setIsAddingConversation(false);
                     setConversationNotes('');
                   }}
-                  className="btn-twitch-secondary"
+                  className="bg-gray-100 hover:bg-gray-200 border-0 rounded-xl px-6"
                 >
+                  <X className="h-4 w-4 mr-2" />
                   Cancel
                 </Button>
               </div>
             </div>
           )}
           
-          <div className="space-y-3">
+          <div className="space-y-4">
             {contact.conversations.length === 0 ? (
-              <p className="text-[hsl(var(--twitch-text-muted))] text-sm text-center py-8">No conversations recorded yet.</p>
+              <div className="text-center py-12">
+                <div className="bg-gradient-to-br from-gray-100 to-gray-200 p-4 rounded-xl w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                  <MessageSquare className="h-8 w-8 text-gray-500" />
+                </div>
+                <p className="text-gray-500 text-lg">No conversations recorded yet</p>
+                <p className="text-gray-400 text-sm mt-1">Start tracking your interactions to build deeper relationships</p>
+              </div>
             ) : (
               contact.conversations.map((conversation) => (
-                <div key={conversation.id} className="p-3 bg-[hsl(var(--twitch-bg))] border border-[hsl(var(--twitch-border))] rounded hover:border-[hsl(var(--twitch-purple))] transition-colors">
+                <div key={conversation.id} className="bg-gray-50 p-4 rounded-xl border border-gray-200 hover:shadow-md transition-shadow">
                   <div className="flex justify-between items-start mb-2">
-                    <span className="text-sm text-[hsl(var(--twitch-text-secondary))]">
+                    <span className="text-sm text-gray-500 flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
                       {formatDistanceToNow(new Date(conversation.date), { addSuffix: true })}
                     </span>
-                    <Badge variant="outline" className="text-xs bg-[hsl(var(--twitch-bg-tertiary))] text-[hsl(var(--twitch-text-secondary))] border-[hsl(var(--twitch-border))]">
-                      {conversation.mood}
-                    </Badge>
                   </div>
-                  <p className="text-sm text-white">{conversation.summary}</p>
+                  <p className="text-gray-700 whitespace-pre-wrap">{conversation.summary}</p>
                 </div>
               ))
             )}
@@ -266,18 +353,20 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
       </Card>
 
       {/* Reminders */}
-      <Card className="bg-[hsl(var(--twitch-bg-secondary))] border-[hsl(var(--twitch-border))]">
+      <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-xl">
         <CardHeader>
           <div className="flex justify-between items-center">
-            <CardTitle className="flex items-center gap-2 text-white">
-              <Bell className="h-5 w-5 text-[hsl(var(--twitch-purple))]" />
+            <CardTitle className="flex items-center gap-3">
+              <div className="bg-gradient-to-r from-orange-500 to-red-500 p-2 rounded-lg">
+                <Bell className="h-6 w-6 text-white" />
+              </div>
               Reminders
             </CardTitle>
             <Button 
               size="sm" 
               onClick={() => setIsAddingReminder(true)}
               disabled={isAddingReminder}
-              className="btn-twitch"
+              className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
             >
               <Plus className="h-4 w-4 mr-1" />
               Add
@@ -286,40 +375,47 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
         </CardHeader>
         <CardContent>
           {isAddingReminder && (
-            <div className="mb-4 space-y-3 p-4 bg-[hsl(var(--twitch-bg))] border border-[hsl(var(--twitch-border))] rounded">
-              <div>
-                <Label htmlFor="reminder-title" className="text-[hsl(var(--twitch-text-secondary))]">Title</Label>
-                <Input
-                  id="reminder-title"
-                  placeholder="Follow up about job opportunity"
-                  value={reminderTitle}
-                  onChange={(e) => setReminderTitle(e.target.value)}
-                  className="bg-[hsl(var(--twitch-bg-tertiary))] border-[hsl(var(--twitch-border))] text-white placeholder:text-[hsl(var(--twitch-text-muted))]"
-                />
+            <div className="mb-6 space-y-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="reminderTitle" className="text-gray-700 font-semibold">Title</Label>
+                  <Input
+                    id="reminderTitle"
+                    placeholder="e.g., Follow up on project"
+                    value={reminderTitle}
+                    onChange={(e) => setReminderTitle(e.target.value)}
+                    className="bg-white border-0 shadow-inner"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="reminderDate" className="text-gray-700 font-semibold">Date</Label>
+                  <Input
+                    id="reminderDate"
+                    type="date"
+                    value={reminderDate}
+                    onChange={(e) => setReminderDate(e.target.value)}
+                    className="bg-white border-0 shadow-inner"
+                  />
+                </div>
               </div>
-              <div>
-                <Label htmlFor="reminder-date" className="text-[hsl(var(--twitch-text-secondary))]">Date</Label>
-                <Input
-                  id="reminder-date"
-                  type="date"
-                  value={reminderDate}
-                  onChange={(e) => setReminderDate(e.target.value)}
-                  className="bg-[hsl(var(--twitch-bg-tertiary))] border-[hsl(var(--twitch-border))] text-white"
-                />
-              </div>
-              <div>
-                <Label htmlFor="reminder-description" className="text-[hsl(var(--twitch-text-secondary))]">Description (optional)</Label>
+              <div className="space-y-2">
+                <Label htmlFor="reminderDescription" className="text-gray-700 font-semibold">Description (optional)</Label>
                 <Textarea
-                  id="reminder-description"
+                  id="reminderDescription"
                   placeholder="Additional details..."
                   value={reminderDescription}
                   onChange={(e) => setReminderDescription(e.target.value)}
-                  rows={2}
-                  className="bg-[hsl(var(--twitch-bg-tertiary))] border-[hsl(var(--twitch-border))] text-white placeholder:text-[hsl(var(--twitch-text-muted))]"
+                  rows={3}
+                  className="bg-white border-0 shadow-inner"
                 />
               </div>
-              <div className="flex gap-2">
-                <Button size="sm" onClick={handleAddReminder} className="btn-twitch">
+              <div className="flex gap-3">
+                <Button 
+                  size="sm" 
+                  onClick={handleAddReminder}
+                  className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-xl px-6"
+                >
+                  <Save className="h-4 w-4 mr-2" />
                   Save
                 </Button>
                 <Button 
@@ -331,37 +427,37 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
                     setReminderDate('');
                     setReminderDescription('');
                   }}
-                  className="btn-twitch-secondary"
+                  className="bg-gray-100 hover:bg-gray-200 border-0 rounded-xl px-6"
                 >
+                  <X className="h-4 w-4 mr-2" />
                   Cancel
                 </Button>
               </div>
             </div>
           )}
           
-          <div className="space-y-3">
-            {contact.reminders.length === 0 ? (
-              <p className="text-[hsl(var(--twitch-text-muted))] text-sm text-center py-8">No reminders set.</p>
+          <div className="space-y-4">
+            {upcomingReminders.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="bg-gradient-to-br from-orange-100 to-red-100 p-4 rounded-xl w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                  <Bell className="h-8 w-8 text-orange-600" />
+                </div>
+                <p className="text-gray-500 text-lg">No upcoming reminders</p>
+                <p className="text-gray-400 text-sm mt-1">Set reminders to stay connected with your contacts</p>
+              </div>
             ) : (
-              contact.reminders.map((reminder) => (
-                <div key={reminder.id} className="p-3 bg-[hsl(var(--twitch-bg))] border border-[hsl(var(--twitch-border))] rounded hover:border-[hsl(var(--twitch-purple))] transition-colors">
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <h4 className="font-medium text-white">{reminder.title}</h4>
-                      {reminder.description && (
-                        <p className="text-sm text-[hsl(var(--twitch-text-secondary))] mt-1">{reminder.description}</p>
-                      )}
-                    </div>
-                    <Badge 
-                      variant={reminder.completed ? "secondary" : "default"}
-                      className={reminder.completed 
-                        ? "text-xs bg-[hsl(var(--twitch-bg-tertiary))] text-[hsl(var(--twitch-text-muted))] border-[hsl(var(--twitch-border))]" 
-                        : "text-xs bg-[hsl(var(--twitch-purple))] text-white border-0"
-                      }
-                    >
-                      {format(new Date(reminder.date), 'MMM d')}
-                    </Badge>
+              upcomingReminders.map((reminder) => (
+                <div key={reminder.id} className="bg-orange-50 p-4 rounded-xl border border-orange-200 hover:shadow-md transition-shadow">
+                  <div className="flex justify-between items-start mb-2">
+                    <h4 className="font-semibold text-gray-900">{reminder.title}</h4>
+                    <span className="text-sm text-orange-600 flex items-center gap-1">
+                      <Calendar className="h-3 w-3" />
+                      {format(new Date(reminder.date), 'MMM d, yyyy')}
+                    </span>
                   </div>
+                  {reminder.description && (
+                    <p className="text-gray-700 text-sm">{reminder.description}</p>
+                  )}
                 </div>
               ))
             )}
