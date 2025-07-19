@@ -46,6 +46,121 @@
 }
 
 @layer components {
+  /* Main background gradient */
+  .bg-gradient-to-br.from-slate-50.via-blue-50.to-indigo-50 {
+    background: linear-gradient(to bottom right, #f8fafc, #eff6ff, #eef2ff);
+  }
+
+  /* Header background */
+  .bg-white\/80 {
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+
+  /* Card backgrounds */
+  .bg-white\/70 {
+    background-color: rgba(255, 255, 255, 0.7);
+  }
+
+  /* Backdrop blur */
+  .backdrop-blur-sm {
+    backdrop-filter: blur(4px);
+  }
+
+  /* Button and icon gradients */
+  .bg-gradient-to-r.from-blue-600.to-indigo-600 {
+    background: linear-gradient(to right, #2563eb, #4f46e5);
+  }
+
+  .bg-gradient-to-r.from-blue-700.to-indigo-700 {
+    background: linear-gradient(to right, #1d4ed8, #4338ca);
+  }
+
+  .bg-gradient-to-br.from-blue-600.to-indigo-700 {
+    background: linear-gradient(to bottom right, #2563eb, #4338ca);
+  }
+
+  .bg-gradient-to-br.from-blue-500.to-blue-600 {
+    background: linear-gradient(to bottom right, #3b82f6, #2563eb);
+  }
+
+  .bg-gradient-to-br.from-orange-500.to-red-500 {
+    background: linear-gradient(to bottom right, #f97316, #ef4444);
+  }
+
+  .bg-gradient-to-br.from-green-500.to-emerald-600 {
+    background: linear-gradient(to bottom right, #22c55e, #059669);
+  }
+
+  .bg-gradient-to-br.from-purple-500.to-pink-500 {
+    background: linear-gradient(to bottom right, #a855f7, #ec4899);
+  }
+
+  .bg-gradient-to-br.from-blue-100.to-indigo-100 {
+    background: linear-gradient(to bottom right, #dbeafe, #e0e7ff);
+  }
+
+  /* Text gradients */
+  .bg-gradient-to-r.from-gray-900.to-gray-700.bg-clip-text.text-transparent {
+    background: linear-gradient(to right, #111827, #374151);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Shadow utilities */
+  .shadow-lg {
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  }
+
+  .shadow-xl {
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  }
+
+  .shadow-2xl {
+    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  }
+
+  .shadow-inner {
+    box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+  }
+
+  /* Border radius */
+  .rounded-xl {
+    border-radius: 0.75rem;
+  }
+
+  .rounded-2xl {
+    border-radius: 1rem;
+  }
+
+  /* Hover effects */
+  .hover\:shadow-xl:hover {
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  }
+
+  .hover\:scale-105:hover {
+    transform: scale(1.05);
+  }
+
+  .group-hover\:scale-110:hover {
+    transform: scale(1.1);
+  }
+
+  /* Transition utilities */
+  .transition-all {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+
+  .duration-200 {
+    transition-duration: 200ms;
+  }
+
+  .duration-300 {
+    transition-duration: 300ms;
+  }
+
   /* Modern glass effect */
   .glass {
     background: rgba(255, 255, 255, 0.1);
