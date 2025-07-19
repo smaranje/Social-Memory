@@ -18,7 +18,12 @@ import {
   Brain,
   Plus,
   Edit,
-  Trash2
+  Trash2,
+  ChevronLeft,
+  MoreVertical,
+  Bell,
+  Sparkles,
+  Circle
 } from 'lucide-react';
 import { format, formatDistanceToNow } from 'date-fns';
 
@@ -90,73 +95,90 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <Button variant="ghost" onClick={onBack} className="flex items-center gap-2">
-          <ArrowLeft className="h-4 w-4" />
-          Back to Contacts
+    <div className="space-y-4 pb-20">
+      {/* Mobile-optimized header */}
+      <div className="flex items-center justify-between bg-[hsl(var(--twitch-bg-secondary))] -mx-4 px-4 py-3 sticky top-0 z-10 border-b border-[hsl(var(--twitch-border))]">
+        <Button 
+          variant="ghost" 
+          onClick={onBack} 
+          className="text-[hsl(var(--twitch-text-secondary))] hover:text-white hover:bg-[hsl(var(--twitch-bg-tertiary))] -ml-2"
+        >
+          <ChevronLeft className="h-5 w-5 mr-1" />
+          Back
         </Button>
-        <Button variant="destructive" size="sm" onClick={() => onDelete(contact.id)}>
-          <Trash2 className="h-4 w-4" />
+        <Button 
+          variant="ghost" 
+          size="icon"
+          className="text-[hsl(var(--twitch-text-secondary))] hover:text-red-500 hover:bg-[hsl(var(--twitch-bg-tertiary))]"
+          onClick={() => {
+            if (confirm('Are you sure you want to delete this contact?')) {
+              onDelete(contact.id);
+            }
+          }}
+        >
+          <Trash2 className="h-5 w-5" />
         </Button>
       </div>
 
-      <Card>
+      {/* Contact header card */}
+      <Card className="bg-[hsl(var(--twitch-bg-secondary))] border-[hsl(var(--twitch-border))]">
         <CardHeader>
-          <div className="flex justify-between items-start">
+          <div className="space-y-3">
             <div>
-              <CardTitle className="text-3xl">{contact.name}</CardTitle>
-              <CardDescription className="flex items-center gap-4 mt-2">
-                <span className="flex items-center gap-1">
-                  <User className="h-4 w-4" />
+              <CardTitle className="text-2xl text-white mb-2">{contact.name}</CardTitle>
+              <div className="flex flex-wrap gap-3 text-sm">
+                <span className="flex items-center gap-1 text-[hsl(var(--twitch-text-secondary))]">
+                  <User className="h-4 w-4 text-[hsl(var(--twitch-purple))]" />
                   {contact.relationship}
                 </span>
-                <span className="flex items-center gap-1">
-                  <MapPin className="h-4 w-4" />
-                  Met at {contact.whereWeMet}
+                <span className="flex items-center gap-1 text-[hsl(var(--twitch-text-secondary))]">
+                  <MapPin className="h-4 w-4 text-[hsl(var(--twitch-purple))]" />
+                  {contact.whereWeMet}
                 </span>
-                <span className="flex items-center gap-1">
-                  <Calendar className="h-4 w-4" />
+                <span className="flex items-center gap-1 text-[hsl(var(--twitch-text-secondary))]">
+                  <Calendar className="h-4 w-4 text-[hsl(var(--twitch-purple))]" />
                   {format(new Date(contact.firstMetDate), 'MMM d, yyyy')}
                 </span>
-              </CardDescription>
+              </div>
             </div>
           </div>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-6">
+        <CardContent className="space-y-4">
+          <div>
+            <h3 className="font-semibold mb-2 text-white text-sm uppercase tracking-wide">How we met</h3>
+            <p className="text-[hsl(var(--twitch-text-secondary))] text-sm">{contact.howWeMet}</p>
+          </div>
+          
+          {contact.notes && (
             <div>
-              <h3 className="font-semibold mb-2">How we met</h3>
-              <p className="text-muted-foreground">{contact.howWeMet}</p>
+              <h3 className="font-semibold mb-2 text-white text-sm uppercase tracking-wide">Notes</h3>
+              <p className="text-[hsl(var(--twitch-text-secondary))] whitespace-pre-wrap text-sm">{contact.notes}</p>
             </div>
-            
-            {contact.notes && (
-              <div>
-                <h3 className="font-semibold mb-2">Notes</h3>
-                <p className="text-muted-foreground whitespace-pre-wrap">{contact.notes}</p>
-              </div>
-            )}
+          )}
 
-            <div>
-              <h3 className="font-semibold mb-2">Tags</h3>
-              <div className="flex flex-wrap gap-2">
-                {contact.tags.map((tag, index) => (
-                  <Badge key={index} variant="secondary">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
+          <div>
+            <h3 className="font-semibold mb-2 text-white text-sm uppercase tracking-wide">Tags</h3>
+            <div className="flex flex-wrap gap-2">
+              {contact.tags.map((tag, index) => (
+                <Badge 
+                  key={index} 
+                  variant="secondary"
+                  className="bg-[hsl(var(--twitch-bg-tertiary))] text-[hsl(var(--twitch-text-secondary))] border-[hsl(var(--twitch-border))]"
+                >
+                  {tag}
+                </Badge>
+              ))}
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* AI Insights */}
+      {/* AI Insights - Twitch style */}
       {aiInsights && aiInsights.length > 0 && (
-        <Card className="border-blue-200 bg-blue-50/50">
+        <Card className="bg-[hsl(var(--twitch-purple))] border-0 twitch-glow">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Brain className="h-5 w-5 text-blue-600" />
+            <CardTitle className="flex items-center gap-2 text-white">
+              <Sparkles className="h-5 w-5 twitch-bounce" />
               AI Insights
             </CardTitle>
           </CardHeader>
@@ -164,8 +186,8 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
             <ul className="space-y-2">
               {aiInsights.map((insight, index) => (
                 <li key={index} className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">•</span>
-                  <span className="text-sm">{insight}</span>
+                  <Circle className="h-2 w-2 fill-current text-white mt-1.5 flex-shrink-0" />
+                  <span className="text-sm text-white/90">{insight}</span>
                 </li>
               ))}
             </ul>
@@ -174,17 +196,18 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
       )}
 
       {/* Conversations */}
-      <Card>
+      <Card className="bg-[hsl(var(--twitch-bg-secondary))] border-[hsl(var(--twitch-border))]">
         <CardHeader>
           <div className="flex justify-between items-center">
-            <CardTitle className="flex items-center gap-2">
-              <MessageSquare className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 text-white">
+              <MessageSquare className="h-5 w-5 text-[hsl(var(--twitch-purple))]" />
               Conversations
             </CardTitle>
             <Button 
               size="sm" 
               onClick={() => setIsAddingConversation(true)}
               disabled={isAddingConversation}
+              className="btn-twitch"
             >
               <Plus className="h-4 w-4 mr-1" />
               Add
@@ -193,15 +216,16 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
         </CardHeader>
         <CardContent>
           {isAddingConversation && (
-            <div className="mb-4 space-y-3 p-4 border rounded-lg">
+            <div className="mb-4 space-y-3 p-4 bg-[hsl(var(--twitch-bg))] border border-[hsl(var(--twitch-border))] rounded">
               <Textarea
                 placeholder="What did you talk about?"
                 value={conversationNotes}
                 onChange={(e) => setConversationNotes(e.target.value)}
                 rows={3}
+                className="bg-[hsl(var(--twitch-bg-tertiary))] border-[hsl(var(--twitch-border))] text-white placeholder:text-[hsl(var(--twitch-text-muted))]"
               />
               <div className="flex gap-2">
-                <Button size="sm" onClick={handleAddConversation}>
+                <Button size="sm" onClick={handleAddConversation} className="btn-twitch">
                   Save
                 </Button>
                 <Button 
@@ -211,6 +235,7 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
                     setIsAddingConversation(false);
                     setConversationNotes('');
                   }}
+                  className="btn-twitch-secondary"
                 >
                   Cancel
                 </Button>
@@ -220,19 +245,19 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
           
           <div className="space-y-3">
             {contact.conversations.length === 0 ? (
-              <p className="text-muted-foreground text-sm">No conversations recorded yet.</p>
+              <p className="text-[hsl(var(--twitch-text-muted))] text-sm text-center py-8">No conversations recorded yet.</p>
             ) : (
               contact.conversations.map((conversation) => (
-                <div key={conversation.id} className="p-3 border rounded-lg">
+                <div key={conversation.id} className="p-3 bg-[hsl(var(--twitch-bg))] border border-[hsl(var(--twitch-border))] rounded hover:border-[hsl(var(--twitch-purple))] transition-colors">
                   <div className="flex justify-between items-start mb-2">
-                    <span className="text-sm text-muted-foreground">
+                    <span className="text-sm text-[hsl(var(--twitch-text-secondary))]">
                       {formatDistanceToNow(new Date(conversation.date), { addSuffix: true })}
                     </span>
-                    <Badge variant="outline" className="text-xs">
+                    <Badge variant="outline" className="text-xs bg-[hsl(var(--twitch-bg-tertiary))] text-[hsl(var(--twitch-text-secondary))] border-[hsl(var(--twitch-border))]">
                       {conversation.mood}
                     </Badge>
                   </div>
-                  <p className="text-sm">{conversation.summary}</p>
+                  <p className="text-sm text-white">{conversation.summary}</p>
                 </div>
               ))
             )}
@@ -241,17 +266,18 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
       </Card>
 
       {/* Reminders */}
-      <Card>
+      <Card className="bg-[hsl(var(--twitch-bg-secondary))] border-[hsl(var(--twitch-border))]">
         <CardHeader>
           <div className="flex justify-between items-center">
-            <CardTitle className="flex items-center gap-2">
-              <Clock className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 text-white">
+              <Bell className="h-5 w-5 text-[hsl(var(--twitch-purple))]" />
               Reminders
             </CardTitle>
             <Button 
               size="sm" 
               onClick={() => setIsAddingReminder(true)}
               disabled={isAddingReminder}
+              className="btn-twitch"
             >
               <Plus className="h-4 w-4 mr-1" />
               Add
@@ -260,37 +286,40 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
         </CardHeader>
         <CardContent>
           {isAddingReminder && (
-            <div className="mb-4 space-y-3 p-4 border rounded-lg">
+            <div className="mb-4 space-y-3 p-4 bg-[hsl(var(--twitch-bg))] border border-[hsl(var(--twitch-border))] rounded">
               <div>
-                <Label htmlFor="reminder-title">Title</Label>
+                <Label htmlFor="reminder-title" className="text-[hsl(var(--twitch-text-secondary))]">Title</Label>
                 <Input
                   id="reminder-title"
                   placeholder="Follow up about job opportunity"
                   value={reminderTitle}
                   onChange={(e) => setReminderTitle(e.target.value)}
+                  className="bg-[hsl(var(--twitch-bg-tertiary))] border-[hsl(var(--twitch-border))] text-white placeholder:text-[hsl(var(--twitch-text-muted))]"
                 />
               </div>
               <div>
-                <Label htmlFor="reminder-date">Date</Label>
+                <Label htmlFor="reminder-date" className="text-[hsl(var(--twitch-text-secondary))]">Date</Label>
                 <Input
                   id="reminder-date"
                   type="date"
                   value={reminderDate}
                   onChange={(e) => setReminderDate(e.target.value)}
+                  className="bg-[hsl(var(--twitch-bg-tertiary))] border-[hsl(var(--twitch-border))] text-white"
                 />
               </div>
               <div>
-                <Label htmlFor="reminder-description">Description (optional)</Label>
+                <Label htmlFor="reminder-description" className="text-[hsl(var(--twitch-text-secondary))]">Description (optional)</Label>
                 <Textarea
                   id="reminder-description"
                   placeholder="Additional details..."
                   value={reminderDescription}
                   onChange={(e) => setReminderDescription(e.target.value)}
                   rows={2}
+                  className="bg-[hsl(var(--twitch-bg-tertiary))] border-[hsl(var(--twitch-border))] text-white placeholder:text-[hsl(var(--twitch-text-muted))]"
                 />
               </div>
               <div className="flex gap-2">
-                <Button size="sm" onClick={handleAddReminder}>
+                <Button size="sm" onClick={handleAddReminder} className="btn-twitch">
                   Save
                 </Button>
                 <Button 
@@ -302,6 +331,7 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
                     setReminderDate('');
                     setReminderDescription('');
                   }}
+                  className="btn-twitch-secondary"
                 >
                   Cancel
                 </Button>
@@ -311,20 +341,23 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
           
           <div className="space-y-3">
             {contact.reminders.length === 0 ? (
-              <p className="text-muted-foreground text-sm">No reminders set.</p>
+              <p className="text-[hsl(var(--twitch-text-muted))] text-sm text-center py-8">No reminders set.</p>
             ) : (
               contact.reminders.map((reminder) => (
-                <div key={reminder.id} className="p-3 border rounded-lg">
+                <div key={reminder.id} className="p-3 bg-[hsl(var(--twitch-bg))] border border-[hsl(var(--twitch-border))] rounded hover:border-[hsl(var(--twitch-purple))] transition-colors">
                   <div className="flex justify-between items-start">
-                    <div>
-                      <h4 className="font-medium">{reminder.title}</h4>
+                    <div className="flex-1">
+                      <h4 className="font-medium text-white">{reminder.title}</h4>
                       {reminder.description && (
-                        <p className="text-sm text-muted-foreground mt-1">{reminder.description}</p>
+                        <p className="text-sm text-[hsl(var(--twitch-text-secondary))] mt-1">{reminder.description}</p>
                       )}
                     </div>
                     <Badge 
                       variant={reminder.completed ? "secondary" : "default"}
-                      className="text-xs"
+                      className={reminder.completed 
+                        ? "text-xs bg-[hsl(var(--twitch-bg-tertiary))] text-[hsl(var(--twitch-text-muted))] border-[hsl(var(--twitch-border))]" 
+                        : "text-xs bg-[hsl(var(--twitch-purple))] text-white border-0"
+                      }
                     >
                       {format(new Date(reminder.date), 'MMM d')}
                     </Badge>

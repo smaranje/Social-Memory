@@ -2,50 +2,44 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Roobert:wght@400;500;600;700;900&family=Inter:wght@400;500;600;700;800&display=swap');
+
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Twitch-inspired color palette */
+    --twitch-purple: 145 70% 52%;
+    --twitch-purple-dark: 145 70% 42%;
+    --twitch-purple-light: 145 70% 62%;
+    --twitch-purple-hover: 145 70% 47%;
+    --twitch-bg: 0 0% 7%;
+    --twitch-bg-secondary: 0 0% 11%;
+    --twitch-bg-tertiary: 0 0% 15%;
+    --twitch-text: 0 0% 100%;
+    --twitch-text-secondary: 0 0% 75%;
+    --twitch-text-muted: 0 0% 50%;
+    --twitch-border: 0 0% 20%;
+    --twitch-accent: 340 82% 52%;
+    
+    --background: var(--twitch-bg);
+    --foreground: var(--twitch-text);
+    --card: var(--twitch-bg-secondary);
+    --card-foreground: var(--twitch-text);
+    --popover: var(--twitch-bg-secondary);
+    --popover-foreground: var(--twitch-text);
+    --primary: var(--twitch-purple);
+    --primary-foreground: var(--twitch-text);
+    --secondary: var(--twitch-bg-tertiary);
+    --secondary-foreground: var(--twitch-text);
+    --muted: var(--twitch-bg-tertiary);
+    --muted-foreground: var(--twitch-text-muted);
+    --accent: var(--twitch-accent);
+    --accent-foreground: var(--twitch-text);
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-    --radius: 0.5rem;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
+    --destructive-foreground: var(--twitch-text);
+    --border: var(--twitch-border);
+    --input: var(--twitch-bg-tertiary);
+    --ring: var(--twitch-purple);
+    --radius: 0.25rem;
   }
 }
 
@@ -55,103 +49,190 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Roobert', 'Inter', sans-serif;
+    font-weight: 700;
   }
 }
 
-/* Custom animations */
-@keyframes blob {
-  0% {
-    transform: translate(0px, 0px) scale(1);
-  }
-  33% {
-    transform: translate(30px, -50px) scale(1.1);
-  }
-  66% {
-    transform: translate(-20px, 20px) scale(0.9);
-  }
-  100% {
-    transform: translate(0px, 0px) scale(1);
-  }
-}
-
-.animate-blob {
-  animation: blob 7s infinite;
-}
-
-.animation-delay-2000 {
-  animation-delay: 2s;
-}
-
-.animation-delay-4000 {
-  animation-delay: 4s;
-}
-
-/* Gradient text animation */
-@keyframes gradient {
-  0% {
-    background-position: 0% 50%;
+/* Twitch-style animations */
+@keyframes twitch-pulse {
+  0%, 100% {
+    opacity: 1;
   }
   50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
+    opacity: 0.5;
   }
 }
 
-.animate-gradient {
-  background-size: 200% 200%;
-  animation: gradient 3s ease infinite;
+@keyframes twitch-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
-/* Custom scrollbar */
+@keyframes twitch-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px hsl(var(--twitch-purple) / 0.5);
+  }
+  50% {
+    box-shadow: 0 0 40px hsl(var(--twitch-purple) / 0.8);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Twitch-style utilities */
 @layer utilities {
-  .scrollbar-thin {
+  .twitch-purple {
+    background-color: hsl(var(--twitch-purple));
+  }
+  
+  .twitch-purple-hover:hover {
+    background-color: hsl(var(--twitch-purple-hover));
+  }
+  
+  .twitch-glow {
+    animation: twitch-glow 2s ease-in-out infinite;
+  }
+  
+  .twitch-bounce {
+    animation: twitch-bounce 1s ease-in-out infinite;
+  }
+  
+  .twitch-pulse {
+    animation: twitch-pulse 2s ease-in-out infinite;
+  }
+  
+  .slide-up {
+    animation: slide-up 0.3s ease-out;
+  }
+  
+  .fade-in {
+    animation: fade-in 0.3s ease-out;
+  }
+  
+  .scale-in {
+    animation: scale-in 0.3s ease-out;
+  }
+}
+
+/* Twitch-style scrollbar */
+@layer utilities {
+  .scrollbar-twitch {
     scrollbar-width: thin;
+    scrollbar-color: hsl(var(--twitch-purple)) hsl(var(--twitch-bg-secondary));
   }
   
-  .scrollbar-thin::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+  .scrollbar-twitch::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
   }
   
-  .scrollbar-thin::-webkit-scrollbar-track {
-    @apply bg-muted/20 rounded-full;
+  .scrollbar-twitch::-webkit-scrollbar-track {
+    @apply bg-[hsl(var(--twitch-bg-secondary))] rounded-full;
   }
   
-  .scrollbar-thin::-webkit-scrollbar-thumb {
-    @apply bg-gradient-to-b from-purple-500 to-pink-500 rounded-full;
+  .scrollbar-twitch::-webkit-scrollbar-thumb {
+    @apply bg-[hsl(var(--twitch-purple))] rounded-full;
   }
   
-  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    @apply from-purple-600 to-pink-600;
+  .scrollbar-twitch::-webkit-scrollbar-thumb:hover {
+    @apply bg-[hsl(var(--twitch-purple-hover))];
   }
 }
 
-/* Glassmorphism utilities */
+/* Twitch-style buttons */
+@layer components {
+  .btn-twitch {
+    @apply bg-[hsl(var(--twitch-purple))] text-white font-semibold px-4 py-2 rounded
+           hover:bg-[hsl(var(--twitch-purple-hover))] transition-all duration-200
+           active:scale-95 transform;
+  }
+  
+  .btn-twitch-secondary {
+    @apply bg-[hsl(var(--twitch-bg-tertiary))] text-white font-semibold px-4 py-2 rounded
+           hover:bg-[hsl(var(--twitch-bg-secondary))] transition-all duration-200
+           active:scale-95 transform border border-[hsl(var(--twitch-border))];
+  }
+}
+
+/* Mobile-optimized tap targets */
 @layer utilities {
-  .glass {
-    @apply bg-white/60 backdrop-blur-md border border-white/20;
-  }
-  
-  .glass-dark {
-    @apply bg-black/60 backdrop-blur-md border border-white/10;
+  .tap-target {
+    @apply min-h-[44px] min-w-[44px];
   }
 }
 
-/* Enhanced focus states */
+/* Enhanced focus states for mobile */
 @layer utilities {
   input:focus,
   textarea:focus,
-  select:focus {
-    @apply outline-none ring-2 ring-purple-500 ring-offset-2 ring-offset-transparent;
+  select:focus,
+  button:focus {
+    @apply outline-none ring-2 ring-[hsl(var(--twitch-purple))] ring-offset-2 ring-offset-[hsl(var(--twitch-bg))];
   }
 }
 
-/* Smooth transitions for all interactive elements */
+/* Smooth transitions */
 @layer base {
   button, a, input, textarea, select {
     @apply transition-all duration-200;
+  }
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+  .mobile-card {
+    @apply rounded-lg shadow-lg;
+  }
+  
+  .mobile-padding {
+    @apply px-4 py-3;
+  }
+}
+
+/* Remove gradient blob animations for mobile performance */
+@media (max-width: 768px) {
+  .animate-blob {
+    animation: none;
   }
 }
