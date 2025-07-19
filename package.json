@@ -47,5 +47,8 @@
     "typescript"
   ],
   "author": "Social Memory Team",
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.18.0"
+  }
 }
