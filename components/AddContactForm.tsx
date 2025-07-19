@@ -112,40 +112,20 @@ export function AddContactForm({ onSubmit, onCancel }: AddContactFormProps) {
   const gradientColor = relationshipColors[relationship] || 'from-gray-500 to-slate-500';
 
   return (
-    <div className="w-full max-w-3xl mx-auto relative">
-      {/* Background overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-pink-900/20 rounded-3xl blur-3xl transform scale-110"></div>
-      
-      {/* Mobile header */}
-      <div className="md:hidden sticky top-0 z-20 backdrop-blur-xl bg-black/20 border-b border-white/10 -mx-4 px-6 py-4 mb-6">
-        <div className="flex items-center justify-between">
-          <Button 
-            type="button"
-            variant="ghost" 
-            onClick={onCancel} 
-            className="text-gray-300 hover:text-white hover:bg-white/10 rounded-xl -ml-2"
-          >
-            <ChevronLeft className="h-5 w-5 mr-1" />
-            Cancel
-          </Button>
-          <h1 className="text-xl font-bold text-white">New Contact</h1>
-          <div className="w-20"></div>
-        </div>
-      </div>
-
-      <Card className="relative bg-black/20 backdrop-blur-xl border border-white/10 shadow-2xl rounded-3xl overflow-hidden">
-        {/* Desktop header */}
-        <CardHeader className="hidden md:block bg-gradient-to-r from-purple-600 to-pink-600 text-white relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/90 to-pink-600/90 backdrop-blur-sm"></div>
+    <div className="w-full max-w-4xl mx-auto">
+      <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-2xl overflow-hidden">
+        {/* Header */}
+        <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/90 to-indigo-600/90"></div>
           <div className="relative flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="bg-white/20 p-3 rounded-2xl backdrop-blur-sm">
-                <UserPlus className="h-7 w-7 animate-pulse" />
+                <UserPlus className="h-7 w-7" />
               </div>
               <div>
                 <CardTitle className="text-3xl font-bold">Add New Contact</CardTitle>
-                <CardDescription className="text-white/80 text-lg">
-                  Transform connections into lasting relationships
+                <CardDescription className="text-blue-100 text-lg">
+                  Build meaningful connections that last
                 </CardDescription>
               </div>
             </div>
@@ -161,22 +141,22 @@ export function AddContactForm({ onSubmit, onCancel }: AddContactFormProps) {
           </div>
         </CardHeader>
         
-        <CardContent className="p-8 relative">
+        <CardContent className="p-8">
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Basic Info Section */}
             <div className="space-y-6">
               <div className="flex items-center gap-3 mb-6">
-                <div className={`p-2 rounded-xl bg-gradient-to-r ${gradientColor}`}>
-                  <RelationshipIcon className="h-5 w-5 text-white" />
+                <div className={`p-3 rounded-xl bg-gradient-to-r ${gradientColor} shadow-lg`}>
+                  <RelationshipIcon className="h-6 w-6 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-white">Basic Information</h3>
+                <h3 className="text-2xl font-bold text-gray-900">Basic Information</h3>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Name */}
                 <div className="space-y-3">
-                  <Label htmlFor="name" className="flex items-center gap-2 text-gray-300 font-medium">
-                    <User className="h-4 w-4 text-purple-400" />
+                  <Label htmlFor="name" className="flex items-center gap-2 text-gray-700 font-semibold">
+                    <User className="h-4 w-4 text-blue-600" />
                     Full Name *
                   </Label>
                   <Input
@@ -185,21 +165,21 @@ export function AddContactForm({ onSubmit, onCancel }: AddContactFormProps) {
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Enter their full name"
                     required
-                    className="bg-black/20 backdrop-blur-xl border border-white/10 text-white placeholder:text-gray-400 focus:border-purple-400/50 rounded-xl h-12 text-lg focus-modern"
+                    className="bg-white/70 backdrop-blur-sm border-0 shadow-inner text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500/20 rounded-xl h-12 text-base"
                   />
                 </div>
 
                 {/* Relationship */}
                 <div className="space-y-3">
-                  <Label className="flex items-center gap-2 text-gray-300 font-medium">
-                    <Star className="h-4 w-4 text-purple-400" />
+                  <Label className="flex items-center gap-2 text-gray-700 font-semibold">
+                    <Star className="h-4 w-4 text-blue-600" />
                     Relationship *
                   </Label>
                   <Select value={relationship} onValueChange={(value: Contact['relationship']) => setRelationship(value)}>
-                    <SelectTrigger className="bg-black/20 backdrop-blur-xl border border-white/10 text-white focus:border-purple-400/50 rounded-xl h-12">
+                    <SelectTrigger className="bg-white/70 backdrop-blur-sm border-0 shadow-inner text-gray-900 focus:ring-2 focus:ring-blue-500/20 rounded-xl h-12">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-black/90 backdrop-blur-xl border border-white/20 text-white">
+                    <SelectContent className="bg-white/95 backdrop-blur-sm border-0 shadow-xl text-gray-900">
                       <SelectItem value="friend">👋 Friend</SelectItem>
                       <SelectItem value="colleague">💼 Colleague</SelectItem>
                       <SelectItem value="family">👨‍👩‍👧‍👦 Family</SelectItem>
@@ -215,8 +195,8 @@ export function AddContactForm({ onSubmit, onCancel }: AddContactFormProps) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Where We Met */}
                 <div className="space-y-3">
-                  <Label htmlFor="whereWeMet" className="flex items-center gap-2 text-gray-300 font-medium">
-                    <MapPin className="h-4 w-4 text-purple-400" />
+                  <Label htmlFor="whereWeMet" className="flex items-center gap-2 text-gray-700 font-semibold">
+                    <MapPin className="h-4 w-4 text-blue-600" />
                     Where We Met
                   </Label>
                   <Input
@@ -224,14 +204,14 @@ export function AddContactForm({ onSubmit, onCancel }: AddContactFormProps) {
                     value={whereWeMet}
                     onChange={(e) => setWhereWeMet(e.target.value)}
                     placeholder="e.g., Coffee shop, Conference, Gym"
-                    className="bg-black/20 backdrop-blur-xl border border-white/10 text-white placeholder:text-gray-400 focus:border-purple-400/50 rounded-xl h-12 focus-modern"
+                    className="bg-white/70 backdrop-blur-sm border-0 shadow-inner text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500/20 rounded-xl h-12"
                   />
                 </div>
 
                 {/* Company */}
                 <div className="space-y-3">
-                  <Label htmlFor="company" className="flex items-center gap-2 text-gray-300 font-medium">
-                    <Building2 className="h-4 w-4 text-purple-400" />
+                  <Label htmlFor="company" className="flex items-center gap-2 text-gray-700 font-semibold">
+                    <Building2 className="h-4 w-4 text-blue-600" />
                     Company
                   </Label>
                   <Input
@@ -239,15 +219,15 @@ export function AddContactForm({ onSubmit, onCancel }: AddContactFormProps) {
                     value={company}
                     onChange={(e) => setCompany(e.target.value)}
                     placeholder="Where do they work?"
-                    className="bg-black/20 backdrop-blur-xl border border-white/10 text-white placeholder:text-gray-400 focus:border-purple-400/50 rounded-xl h-12 focus-modern"
+                    className="bg-white/70 backdrop-blur-sm border-0 shadow-inner text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500/20 rounded-xl h-12"
                   />
                 </div>
               </div>
 
               {/* How We Met */}
               <div className="space-y-3">
-                <Label htmlFor="howWeMet" className="flex items-center gap-2 text-gray-300 font-medium">
-                  <Sparkles className="h-4 w-4 text-purple-400" />
+                <Label htmlFor="howWeMet" className="flex items-center gap-2 text-gray-700 font-semibold">
+                  <Sparkles className="h-4 w-4 text-blue-600" />
                   How We Met
                 </Label>
                 <Textarea
@@ -255,7 +235,7 @@ export function AddContactForm({ onSubmit, onCancel }: AddContactFormProps) {
                   value={howWeMet}
                   onChange={(e) => setHowWeMet(e.target.value)}
                   placeholder="Tell the story of how you met..."
-                  className="bg-black/20 backdrop-blur-xl border border-white/10 text-white placeholder:text-gray-400 focus:border-purple-400/50 rounded-xl min-h-[100px] resize-none focus-modern"
+                  className="bg-white/70 backdrop-blur-sm border-0 shadow-inner text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500/20 rounded-xl min-h-[100px] resize-none"
                 />
               </div>
             </div>
@@ -263,10 +243,10 @@ export function AddContactForm({ onSubmit, onCancel }: AddContactFormProps) {
             {/* Tags Section */}
             <div className="space-y-6">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500">
-                  <Tag className="h-5 w-5 text-white" />
+                <div className="p-3 rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 shadow-lg">
+                  <Tag className="h-6 w-6 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-white">Tags & Interests</h3>
+                <h3 className="text-2xl font-bold text-gray-900">Tags & Interests</h3>
               </div>
               
               <div className="space-y-4">
@@ -276,12 +256,12 @@ export function AddContactForm({ onSubmit, onCancel }: AddContactFormProps) {
                     onChange={(e) => setTagInput(e.target.value)}
                     onKeyPress={handleTagKeyPress}
                     placeholder="Add tags (hobbies, interests, work...)"
-                    className="bg-black/20 backdrop-blur-xl border border-white/10 text-white placeholder:text-gray-400 focus:border-purple-400/50 rounded-xl h-12 focus-modern"
+                    className="bg-white/70 backdrop-blur-sm border-0 shadow-inner text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500/20 rounded-xl h-12"
                   />
                   <Button
                     type="button"
                     onClick={addTag}
-                    className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-6 rounded-xl h-12 font-semibold"
+                    className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white px-6 rounded-xl h-12 font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
                   >
                     <Plus className="h-4 w-4" />
                   </Button>
@@ -292,13 +272,13 @@ export function AddContactForm({ onSubmit, onCancel }: AddContactFormProps) {
                     {tags.map((tag, index) => (
                       <Badge
                         key={index}
-                        className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-200 border-purple-400/30 px-4 py-2 rounded-full flex items-center gap-2 hover:bg-purple-500/30 transition-all"
+                        className="bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 border-0 px-4 py-2 rounded-full flex items-center gap-2 hover:from-blue-200 hover:to-indigo-200 transition-all shadow-sm"
                       >
                         {tag}
                         <button
                           type="button"
                           onClick={() => removeTag(tag)}
-                          className="hover:text-red-300 transition-colors"
+                          className="hover:text-red-600 transition-colors"
                         >
                           <X className="h-3 w-3" />
                         </button>
@@ -312,34 +292,35 @@ export function AddContactForm({ onSubmit, onCancel }: AddContactFormProps) {
             {/* Notes Section */}
             <div className="space-y-6">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-gradient-to-r from-green-500 to-emerald-500">
-                  <FileText className="h-5 w-5 text-white" />
+                <div className="p-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg">
+                  <FileText className="h-6 w-6 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-white">Additional Notes</h3>
+                <h3 className="text-2xl font-bold text-gray-900">Additional Notes</h3>
               </div>
               
               <Textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Any additional information, shared interests, or things to remember..."
-                className="bg-black/20 backdrop-blur-xl border border-white/10 text-white placeholder:text-gray-400 focus:border-purple-400/50 rounded-xl min-h-[120px] resize-none focus-modern"
+                className="bg-white/70 backdrop-blur-sm border-0 shadow-inner text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500/20 rounded-xl min-h-[120px] resize-none"
               />
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-col-reverse md:flex-row gap-4 pt-6 border-t border-white/10">
+            <div className="flex flex-col-reverse md:flex-row gap-4 pt-8 border-t border-gray-200">
               <Button
                 type="button"
                 variant="ghost"
                 onClick={onCancel}
-                className="flex-1 md:flex-none bg-black/20 text-gray-300 hover:text-white hover:bg-white/10 border border-white/10 rounded-xl h-12 px-8 font-semibold"
+                className="flex-1 md:flex-none bg-gray-100 text-gray-700 hover:bg-gray-200 border-0 rounded-xl h-12 px-8 font-semibold transition-all duration-200"
               >
+                <ChevronLeft className="h-5 w-5 mr-2" />
                 Cancel
               </Button>
               <Button
                 type="submit"
                 disabled={!name.trim()}
-                className="flex-1 md:flex-none bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl h-12 px-8 font-semibold shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 md:flex-none bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl h-12 px-8 font-semibold shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Save className="h-5 w-5 mr-2" />
                 Save Contact
