@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: "Social Memory - Never forget what matters",
@@ -20,7 +22,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="scrollbar-twitch">{children}</body>
+      <body className="scrollbar-twitch">
+        <AuthProvider>
+          {children}
+          <Toaster 
+            position="top-right"
+            toastOptions={{
+              className: 'bg-white border shadow-lg',
+              duration: 4000,
+            }}
+          />
+        </AuthProvider>
+      </body>
     </html>
   );
 }
