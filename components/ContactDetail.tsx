@@ -391,7 +391,7 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
                     placeholder="e.g., Follow up on project"
                     value={reminderTitle}
                     onChange={(e) => setReminderTitle(e.target.value)}
-                    className="bg-white/70 backdrop-blur-sm border-0 shadow-inner text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500/20 rounded-xl h-12 text-base"
+                    className="bg-white border shadow-sm text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded-xl h-12 text-base"
                   />
                 </div>
                 <div className="space-y-3">
@@ -402,7 +402,7 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
                       type="date"
                       value={reminderDate}
                       onChange={(e) => setReminderDate(e.target.value)}
-                      className="bg-white/70 backdrop-blur-sm border-0 shadow-inner text-gray-900 focus:ring-2 focus:ring-blue-500/20 rounded-xl h-12 text-base [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:right-3 [&::-webkit-calendar-picker-indicator]:w-5 [&::-webkit-calendar-picker-indicator]:h-5 [&::-webkit-calendar-picker-indicator]:cursor-pointer"
+                      className="bg-white border shadow-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded-xl h-12 text-base [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:right-3 [&::-webkit-calendar-picker-indicator]:w-5 [&::-webkit-calendar-picker-indicator]:h-5 [&::-webkit-calendar-picker-indicator]:cursor-pointer"
                       min={new Date().toISOString().split('T')[0]}
                     />
                     <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
@@ -417,7 +417,7 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
                   value={reminderDescription}
                   onChange={(e) => setReminderDescription(e.target.value)}
                   rows={4}
-                  className="bg-white/70 backdrop-blur-sm border-0 shadow-inner text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500/20 rounded-xl resize-none"
+                  className="bg-white border shadow-sm text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded-xl resize-none"
                 />
               </div>
               <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4 border-t border-gray-200">
