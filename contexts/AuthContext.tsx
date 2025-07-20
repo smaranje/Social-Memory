@@ -29,6 +29,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       validateSupabaseConfig()
     } catch (error) {
       console.error('Supabase configuration error:', error)
+      // Show user-friendly error message
+      if (typeof window !== 'undefined') {
+        const errorMsg = error instanceof Error ? error.message : 'Supabase configuration error'
+        console.warn('Authentication disabled:', errorMsg)
+      }
       setLoading(false)
       return
     }

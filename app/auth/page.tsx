@@ -24,7 +24,10 @@ export default function AuthPage() {
   useEffect(() => {
     if (!authLoading && user) {
       console.log('User already authenticated, redirecting to main app')
-      router.push('/')
+      // Add a small delay to ensure the authentication state is fully settled
+      setTimeout(() => {
+        router.push('/')
+      }, 100)
     }
   }, [user, authLoading, router])
 
@@ -52,7 +55,10 @@ export default function AuthPage() {
     try {
       await signIn(email, password)
       toast.success('Welcome back!')
-      // The useEffect above will handle the redirect when user state updates
+      // Add a small delay before redirect to ensure the toast is shown
+      setTimeout(() => {
+        router.push('/')
+      }, 1000)
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to sign in')
     } finally {
@@ -67,7 +73,8 @@ export default function AuthPage() {
     try {
       await signUp(email, password, fullName)
       toast.success('Account created! Please check your email to verify your account.')
-      // The useEffect above will handle the redirect when user state updates
+      // For sign up, don't redirect immediately - user needs to verify email first
+      // The useEffect above will handle the redirect when user state updates after verification
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to create account')
     } finally {
