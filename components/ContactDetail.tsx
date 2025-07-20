@@ -274,11 +274,11 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
       <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-xl">
         <CardHeader>
           <div className="flex justify-between items-center">
-            <CardTitle className="flex items-center gap-3">
+            <CardTitle className="flex items-center gap-3 text-gray-900">
               <div className="bg-gradient-to-r from-green-500 to-emerald-500 p-2 rounded-lg">
                 <MessageSquare className="h-6 w-6 text-white" />
               </div>
-              Conversations
+              <span className="text-gray-900 font-semibold">Conversations</span>
             </CardTitle>
             <Button 
               type="button"
@@ -311,8 +311,8 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
                   onClick={handleAddConversation}
                   className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white rounded-xl px-6"
                 >
-                  <Save className="h-4 w-4 mr-2" />
-                  Save
+                  <Save className="h-4 w-4 mr-2 text-white" />
+                  <span className="text-white">Save</span>
                 </Button>
                 <Button 
                   type="button"
@@ -322,10 +322,10 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
                     setIsAddingConversation(false);
                     setConversationNotes('');
                   }}
-                  className="bg-gray-100 hover:bg-gray-200 border-0 rounded-xl px-6"
+                  className="bg-gray-100 hover:bg-gray-200 border-0 rounded-xl px-6 text-gray-700"
                 >
-                  <X className="h-4 w-4 mr-2" />
-                  Cancel
+                  <X className="h-4 w-4 mr-2 text-gray-700" />
+                  <span className="text-gray-700">Cancel</span>
                 </Button>
               </div>
             </div>
@@ -348,6 +348,41 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
                       <Clock className="h-3 w-3" />
                       {formatDistanceToNow(new Date(conversation.date), { addSuffix: true })}
                     </span>
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="ghost"
+                        className="h-6 w-6 p-0 text-gray-400 hover:text-gray-600"
+                        onClick={() => {
+                          setConversationNotes(conversation.summary);
+                          setIsAddingConversation(true);
+                          // Remove the current conversation when editing
+                          const updatedContact = {
+                            ...contact,
+                            conversations: contact.conversations.filter(c => c.id !== conversation.id)
+                          };
+                          onUpdate(updatedContact);
+                        }}
+                      >
+                        <Edit className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="ghost"
+                        className="h-6 w-6 p-0 text-gray-400 hover:text-red-600"
+                        onClick={() => {
+                          const updatedContact = {
+                            ...contact,
+                            conversations: contact.conversations.filter(c => c.id !== conversation.id)
+                          };
+                          onUpdate(updatedContact);
+                        }}
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </div>
                   </div>
                   <p className="text-gray-700 whitespace-pre-wrap">{conversation.summary}</p>
                 </div>
@@ -361,11 +396,11 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
       <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-xl">
         <CardHeader>
           <div className="flex justify-between items-center">
-            <CardTitle className="flex items-center gap-3">
+            <CardTitle className="flex items-center gap-3 text-gray-900">
               <div className="bg-gradient-to-r from-orange-500 to-red-500 p-2 rounded-lg">
                 <Bell className="h-6 w-6 text-white" />
               </div>
-              Reminders
+              <span className="text-gray-900 font-semibold">Reminders</span>
             </CardTitle>
             <Button 
               type="button"
@@ -432,8 +467,8 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
                   }}
                   className="flex-1 sm:flex-none bg-gray-100 text-gray-700 hover:bg-gray-200 border-0 rounded-xl h-12 px-6 font-semibold transition-all duration-200"
                 >
-                  <X className="h-4 w-4 mr-2" />
-                  Cancel
+                  <X className="h-4 w-4 mr-2 text-gray-700" />
+                  <span className="text-gray-700">Cancel</span>
                 </Button>
                 <Button 
                   type="button"
@@ -441,8 +476,8 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
                   disabled={!reminderTitle.trim() || !reminderDate}
                   className="flex-1 sm:flex-none bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-xl h-12 px-6 font-semibold shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Save className="h-4 w-4 mr-2" />
-                  Save
+                  <Save className="h-4 w-4 mr-2 text-white" />
+                  <span className="text-white">Save</span>
                 </Button>
               </div>
             </div>
@@ -462,10 +497,49 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
                 <div key={reminder.id} className="bg-orange-50 p-4 rounded-xl border border-orange-200 hover:shadow-md transition-shadow">
                   <div className="flex justify-between items-start mb-2">
                     <h4 className="font-semibold text-gray-900">{reminder.title}</h4>
-                    <span className="text-sm text-orange-600 flex items-center gap-1">
-                      <Calendar className="h-3 w-3" />
-                      {format(new Date(reminder.date), 'MMM d, yyyy')}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-orange-600 flex items-center gap-1">
+                        <Calendar className="h-3 w-3" />
+                        {format(new Date(reminder.date), 'MMM d, yyyy')}
+                      </span>
+                      <div className="flex gap-2">
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="ghost"
+                          className="h-6 w-6 p-0 text-gray-400 hover:text-gray-600"
+                          onClick={() => {
+                            setReminderTitle(reminder.title);
+                            setReminderDate(reminder.date.split('T')[0]);
+                            setReminderDescription(reminder.description || '');
+                            setIsAddingReminder(true);
+                            // Remove the current reminder when editing
+                            const updatedContact = {
+                              ...contact,
+                              reminders: contact.reminders.filter(r => r.id !== reminder.id)
+                            };
+                            onUpdate(updatedContact);
+                          }}
+                        >
+                          <Edit className="h-3 w-3" />
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="ghost"
+                          className="h-6 w-6 p-0 text-gray-400 hover:text-red-600"
+                          onClick={() => {
+                            const updatedContact = {
+                              ...contact,
+                              reminders: contact.reminders.filter(r => r.id !== reminder.id)
+                            };
+                            onUpdate(updatedContact);
+                          }}
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                   {reminder.description && (
                     <p className="text-gray-700 text-sm">{reminder.description}</p>
