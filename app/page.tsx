@@ -38,8 +38,10 @@ export default function Home() {
   useEffect(() => {
     if (!loading) {
       if (!user) {
+        console.log('No user found, redirecting to auth')
         router.push('/auth');
       } else {
+        console.log('User authenticated, loading contacts')
         loadContacts();
       }
     }

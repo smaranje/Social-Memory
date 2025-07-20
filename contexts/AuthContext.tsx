@@ -41,7 +41,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     supabase.auth.getSession().then(({ data: { session } }) => {
       console.log('Initial session:', session)
       setUser(session?.user ?? null)
-      setLoading(false)
+      if (!session?.user) {
+        setLoading(false)
+      }
     })
 
     // Listen for auth changes
@@ -50,7 +52,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         console.log('Auth state changed:', event, session)
         setUser(session?.user ?? null)
         
-                 if (session?.user) {
+        if (session?.user) {
           try {
             // Load user profile
             let profile = await database.getProfile(session.user.id)
@@ -80,7 +82,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               setProfile(newProfile)
             } catch (createError) {
               console.error('Error creating profile:', createError)
-              setProfile(null)
+              // Set a basic profile object to prevent infinite loading
+              setProfile({
+                id: session.user.id,
+                email: session.user.email || '',
+                full_name: session.user.user_metadata?.full_name || session.user.user_metadata?.name || null
+              })
             }
           }
         } else {
@@ -103,6 +110,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     try {
+      setLoading(true)
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -114,7 +122,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       
       console.log('Sign in successful:', data)
+      // Don't set loading to false here, let the auth state change handler do it
     } catch (error: any) {
+      setLoading(false)
       console.error('SignIn error:', error)
       if (error.message?.includes('fetch') || error.message?.includes('Failed to fetch')) {
         throw new Error('Unable to connect to authentication service. Please check your Supabase configuration and internet connection.')
@@ -132,6 +142,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     try {
+      setLoading(true)
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -148,7 +159,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       
       console.log('Sign up successful:', data)
+      // Don't set loading to false here, let the auth state change handler do it
     } catch (error: unknown) {
+      setLoading(false)
       console.error('SignUp error:', error)
       
       // Handle different types of errors
@@ -170,8 +183,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const signOut = async () => {
+    setLoading(true)
     const { error } = await supabase.auth.signOut()
-    if (error) throw error
+    if (error) {
+      setLoading(false)
+      throw error
+    }
+    // Auth state change will handle setting loading to false
   }
 
   const signInWithGoogle = async () => {
