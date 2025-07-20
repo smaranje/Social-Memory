@@ -1,9 +1,42 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co'
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key'
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Validate environment variables (but allow build to proceed with fallbacks)
+if (!supabaseUrl || !supabaseAnonKey) {
+  if (typeof window !== 'undefined') {
+    // Client-side: Show error to user
+    console.error('Missing Supabase environment variables. Please check your .env.local file.')
+  }
+  // Use fallbacks for build time
+}
+
+if (supabaseUrl?.includes('placeholder') || supabaseAnonKey?.includes('placeholder')) {
+  if (typeof window !== 'undefined') {
+    // Client-side: Show error to user
+    console.error('Supabase environment variables contain placeholder values. Please update your .env.local file with actual credentials.')
+  }
+}
+
+// Use fallback values for build, but ensure they're obviously not production values
+const finalUrl = supabaseUrl || 'https://placeholder.supabase.co'
+const finalKey = supabaseAnonKey || 'placeholder-key'
+
+export const supabase = createClient(finalUrl, finalKey)
+
+// Runtime validation function
+export const validateSupabaseConfig = () => {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('Missing Supabase environment variables. Please check your .env.local file.')
+  }
+  
+  if (supabaseUrl.includes('placeholder') || supabaseAnonKey.includes('placeholder')) {
+    throw new Error('Supabase environment variables contain placeholder values. Please update your .env.local file with actual credentials.')
+  }
+  
+  return true
+}
 
 export type Database = {
   public: {
