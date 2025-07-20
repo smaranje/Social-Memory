@@ -1,6 +1,7 @@
-# Social Memory - AI-Pow
+# Social Memory - AI-Powered Personal CRM
+
 <img width="1421" height="627" alt="Screenshot 2025-07-19 at 8 39 15 PM" src="https://github.com/user-attachments/assets/99d8c45d-5af9-435b-a0d5-21558cccf490" />
-ered Personal CRM
+
 
 > Never forget what matters to the people who matter.
 
