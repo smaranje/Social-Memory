@@ -20,7 +20,7 @@ function AuthCallbackContent() {
           
           if (error) {
             console.error('Auth callback error:', error)
-            router.push('/auth?error=callback_error')
+            router.replace('/auth?error=callback_error')
             return
           }
 
@@ -29,7 +29,7 @@ function AuthCallbackContent() {
             console.log('Authentication successful, redirecting to main app')
             // Add a small delay to ensure session is fully established
             setTimeout(() => {
-              router.push('/')
+              router.replace('/')
             }, 500)
             return
           }
@@ -40,7 +40,7 @@ function AuthCallbackContent() {
         
         if (error) {
           console.error('Auth callback error:', error)
-          router.push('/auth?error=callback_error')
+          router.replace('/auth?error=callback_error')
           return
         }
 
@@ -48,16 +48,16 @@ function AuthCallbackContent() {
           // User is authenticated, go to main app
           console.log('Session exists, redirecting to main app')
           setTimeout(() => {
-            router.push('/')
+            router.replace('/')
           }, 500)
         } else {
           // No session, go back to auth
           console.log('No session found, redirecting to auth')
-          router.push('/auth')
+          router.replace('/auth')
         }
-      } catch (error) {
+              } catch (error) {
         console.error('Unexpected auth callback error:', error)
-        router.push('/auth?error=unexpected_error')
+        router.replace('/auth?error=unexpected_error')
       }
     }
 

@@ -70,18 +70,35 @@ export async function middleware(req: NextRequest) {
       data: { session },
     } = await supabase.auth.getSession()
 
+    const isAuthPage = req.nextUrl.pathname.startsWith('/auth')
+    const isRootPage = req.nextUrl.pathname === '/'
+    
+    // Don't redirect if we're already on the auth callback page
+    if (req.nextUrl.pathname === '/auth/callback') {
+      return response
+    }
+
     // Check if user is trying to access auth pages while logged in
-    if (session && req.nextUrl.pathname.startsWith('/auth')) {
+    if (session && isAuthPage && req.nextUrl.pathname !== '/auth/callback') {
+      console.log('User already authenticated, redirecting to main app')
       return NextResponse.redirect(new URL('/', req.url))
     }
 
-    // Check if user is trying to access protected pages while not logged in
-    if (!session && !req.nextUrl.pathname.startsWith('/auth')) {
+    // Only redirect to auth if:
+    // 1. No session exists
+    // 2. We're not already on an auth page
+    // 3. We're trying to access a protected route
+    if (!session && !isAuthPage) {
+      console.log('No session found, redirecting to auth')
       return NextResponse.redirect(new URL('/auth', req.url))
     }
   } catch (error) {
     console.error('Middleware auth error:', error)
     // Let the request proceed on auth errors to avoid breaking the app
+    // Only redirect to auth if we're on a protected route and there's an auth error
+    if (!req.nextUrl.pathname.startsWith('/auth')) {
+      return NextResponse.redirect(new URL('/auth', req.url))
+    }
   }
 
   return response
