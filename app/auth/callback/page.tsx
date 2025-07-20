@@ -27,7 +27,10 @@ function AuthCallbackContent() {
           if (data.session) {
             // Successfully authenticated - redirect to main app
             console.log('Authentication successful, redirecting to main app')
-            router.push('/')
+            // Add a small delay to ensure session is fully established
+            setTimeout(() => {
+              router.push('/')
+            }, 500)
             return
           }
         }
@@ -44,7 +47,9 @@ function AuthCallbackContent() {
         if (data.session) {
           // User is authenticated, go to main app
           console.log('Session exists, redirecting to main app')
-          router.push('/')
+          setTimeout(() => {
+            router.push('/')
+          }, 500)
         } else {
           // No session, go back to auth
           console.log('No session found, redirecting to auth')

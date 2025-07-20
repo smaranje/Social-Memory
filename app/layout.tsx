@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { AppWrapper } from "@/components/AppWrapper";
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
@@ -23,33 +24,35 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="scrollbar-twitch">
-        <AuthProvider>
-          {children}
-          <Toaster 
-            position="top-right"
-            toastOptions={{
-              className: '!bg-white !text-gray-900 !border !border-gray-200 !shadow-lg',
-              duration: 4000,
-              style: {
-                background: '#ffffff',
-                color: '#111827',
-                border: '1px solid #e5e7eb',
-              },
-              success: {
-                iconTheme: {
-                  primary: '#10b981',
-                  secondary: '#ffffff',
+        <AppWrapper>
+          <AuthProvider>
+            {children}
+            <Toaster 
+              position="top-right"
+              toastOptions={{
+                className: '!bg-white !text-gray-900 !border !border-gray-200 !shadow-lg',
+                duration: 4000,
+                style: {
+                  background: '#ffffff',
+                  color: '#111827',
+                  border: '1px solid #e5e7eb',
                 },
-              },
-              error: {
-                iconTheme: {
-                  primary: '#ef4444',
-                  secondary: '#ffffff',
+                success: {
+                  iconTheme: {
+                    primary: '#10b981',
+                    secondary: '#ffffff',
+                  },
                 },
-              },
-            }}
-          />
-        </AuthProvider>
+                error: {
+                  iconTheme: {
+                    primary: '#ef4444',
+                    secondary: '#ffffff',
+                  },
+                },
+              }}
+            />
+          </AuthProvider>
+        </AppWrapper>
       </body>
     </html>
   );
