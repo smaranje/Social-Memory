@@ -39,7 +39,10 @@ export default function Home() {
     if (!loading) {
       if (!user) {
         console.log('No user found, redirecting to auth')
-        router.push('/auth');
+        // Add a delay to prevent immediate redirect conflicts with middleware
+        setTimeout(() => {
+          router.push('/auth');
+        }, 100);
       } else {
         console.log('User authenticated, loading contacts')
         loadContacts();
@@ -49,12 +52,24 @@ export default function Home() {
   }, [user, loading, router]);
 
   // Show loading state while authentication is being checked
-  if (loading || (!user && !loading)) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
+          <p className="text-gray-600">Checking authentication...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // If not loading and no user, let the useEffect handle the redirect
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Redirecting to authentication...</p>
         </div>
       </div>
     )

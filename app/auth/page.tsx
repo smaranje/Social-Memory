@@ -24,10 +24,10 @@ export default function AuthPage() {
   useEffect(() => {
     if (!authLoading && user) {
       console.log('User already authenticated, redirecting to main app')
-      // Add a small delay to ensure the authentication state is fully settled
+      // Add a longer delay to prevent conflicts with middleware redirects
       setTimeout(() => {
-        router.push('/')
-      }, 100)
+        router.replace('/')
+      }, 500)
     }
   }, [user, authLoading, router])
 
@@ -57,7 +57,7 @@ export default function AuthPage() {
       toast.success('Welcome back!')
       // Add a small delay before redirect to ensure the toast is shown
       setTimeout(() => {
-        router.push('/')
+        router.replace('/')
       }, 1000)
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to sign in')

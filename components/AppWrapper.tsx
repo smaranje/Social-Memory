@@ -19,9 +19,13 @@ export function AppWrapper({ children }: { children: React.ReactNode }) {
       const url = process.env.NEXT_PUBLIC_SUPABASE_URL
       const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
+      console.log('AppWrapper - Checking configuration:', { url, key })
+      
       const urlValid = url && !url.includes('placeholder') && url.includes('supabase.co')
       const keyValid = key && !key.includes('placeholder') && key.startsWith('eyJ')
       const isConfigured = !!urlValid && !!keyValid
+
+      console.log('AppWrapper - Configuration check result:', { urlValid, keyValid, isConfigured })
 
       setConfig({
         isConfigured,
