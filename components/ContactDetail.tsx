@@ -382,54 +382,47 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
         </CardHeader>
         <CardContent>
           {isAddingReminder && (
-            <div className="mb-6 space-y-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="reminderTitle" className="text-gray-700 font-semibold">Title</Label>
+            <div className="mb-6 space-y-6 p-6 bg-white/80 backdrop-blur-sm rounded-2xl border-0 shadow-lg">
+              <div className="space-y-4">
+                <div className="space-y-3">
+                  <Label htmlFor="reminderTitle" className="text-gray-900 font-semibold text-base">Title</Label>
                   <Input
                     id="reminderTitle"
                     placeholder="e.g., Follow up on project"
                     value={reminderTitle}
                     onChange={(e) => setReminderTitle(e.target.value)}
-                    className="bg-white border-0 shadow-inner"
+                    className="bg-white/70 backdrop-blur-sm border-0 shadow-inner text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500/20 rounded-xl h-12 text-base"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="reminderDate" className="text-gray-700 font-semibold">Date</Label>
-                  <Input
-                    id="reminderDate"
-                    type="date"
-                    value={reminderDate}
-                    onChange={(e) => setReminderDate(e.target.value)}
-                    className="bg-white border-0 shadow-inner"
-                  />
+                <div className="space-y-3">
+                  <Label htmlFor="reminderDate" className="text-gray-900 font-semibold text-base">Date</Label>
+                  <div className="relative">
+                    <Input
+                      id="reminderDate"
+                      type="date"
+                      value={reminderDate}
+                      onChange={(e) => setReminderDate(e.target.value)}
+                      className="bg-white/70 backdrop-blur-sm border-0 shadow-inner text-gray-900 focus:ring-2 focus:ring-blue-500/20 rounded-xl h-12 text-base [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:right-3 [&::-webkit-calendar-picker-indicator]:w-5 [&::-webkit-calendar-picker-indicator]:h-5 [&::-webkit-calendar-picker-indicator]:cursor-pointer"
+                      min={new Date().toISOString().split('T')[0]}
+                    />
+                    <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+                  </div>
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="reminderDescription" className="text-gray-700 font-semibold">Description (optional)</Label>
+              <div className="space-y-3">
+                <Label htmlFor="reminderDescription" className="text-gray-900 font-semibold text-base">Description (optional)</Label>
                 <Textarea
                   id="reminderDescription"
                   placeholder="Additional details..."
                   value={reminderDescription}
                   onChange={(e) => setReminderDescription(e.target.value)}
-                  rows={3}
-                  className="bg-white border-0 shadow-inner"
+                  rows={4}
+                  className="bg-white/70 backdrop-blur-sm border-0 shadow-inner text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500/20 rounded-xl resize-none"
                 />
               </div>
-              <div className="flex gap-3">
+              <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4 border-t border-gray-200">
                 <Button 
                   type="button"
-                  variant="secondary"
-                  size="sm" 
-                  onClick={handleAddReminder}
-                  className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-xl px-6"
-                >
-                  <Save className="h-4 w-4 mr-2" />
-                  Save
-                </Button>
-                <Button 
-                  type="button"
-                  size="sm" 
                   variant="outline" 
                   onClick={() => {
                     setIsAddingReminder(false);
@@ -437,10 +430,19 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
                     setReminderDate('');
                     setReminderDescription('');
                   }}
-                  className="bg-gray-100 hover:bg-gray-200 border-0 rounded-xl px-6"
+                  className="flex-1 sm:flex-none bg-gray-100 text-gray-700 hover:bg-gray-200 border-0 rounded-xl h-12 px-6 font-semibold transition-all duration-200"
                 >
                   <X className="h-4 w-4 mr-2" />
                   Cancel
+                </Button>
+                <Button 
+                  type="button"
+                  onClick={handleAddReminder}
+                  disabled={!reminderTitle.trim() || !reminderDate}
+                  className="flex-1 sm:flex-none bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-xl h-12 px-6 font-semibold shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Save className="h-4 w-4 mr-2" />
+                  Save
                 </Button>
               </div>
             </div>
