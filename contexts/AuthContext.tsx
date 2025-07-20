@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from 'react'
 import { User, AuthError } from '@supabase/supabase-js'
-import { supabase } from '@/lib/supabase'
+import { supabase, validateSupabaseConfig } from '@/lib/supabase'
 import { database } from '@/lib/database'
 
 interface AuthContextType {
@@ -25,14 +25,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Check if Supabase is properly configured
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || 
-        !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-        process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder') ||
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.includes('placeholder')) {
-      console.error('Supabase configuration missing or using placeholder values.')
-      console.error('Please update your .env.local file with actual Supabase credentials.')
-      console.error('NEXT_PUBLIC_SUPABASE_URL:', process.env.NEXT_PUBLIC_SUPABASE_URL)
-      console.error('NEXT_PUBLIC_SUPABASE_ANON_KEY:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Not set')
+    try {
+      validateSupabaseConfig()
+    } catch (error) {
+      console.error('Supabase configuration error:', error)
       setLoading(false)
       return
     }
@@ -55,18 +51,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(session?.user ?? null)
         
                  if (session?.user) {
-           try {
-             // Load user profile
-             const profile = await database.getProfile(session.user.id)
-             console.log('User profile loaded:', profile)
-             setProfile(profile)
-           } catch (error) {
-             console.error('Error loading profile:', error)
-             setProfile(null)
-           }
-         } else {
-           setProfile(null)
-         }
+          try {
+            // Load user profile
+            let profile = await database.getProfile(session.user.id)
+            
+            // If profile doesn't exist, create one
+            if (!profile) {
+              console.log('Creating new profile for user:', session.user.id)
+              profile = await database.createProfile({
+                id: session.user.id,
+                email: session.user.email || '',
+                full_name: session.user.user_metadata?.full_name || session.user.user_metadata?.name || null
+              })
+            }
+            
+            console.log('User profile loaded:', profile)
+            setProfile(profile)
+          } catch (error) {
+            console.error('Error loading/creating profile:', error)
+            
+            // Try to create profile if loading failed
+            try {
+              const newProfile = await database.createProfile({
+                id: session.user.id,
+                email: session.user.email || '',
+                full_name: session.user.user_metadata?.full_name || session.user.user_metadata?.name || null
+              })
+              setProfile(newProfile)
+            } catch (createError) {
+              console.error('Error creating profile:', createError)
+              setProfile(null)
+            }
+          }
+        } else {
+          setProfile(null)
+        }
         
         setLoading(false)
       }
@@ -77,11 +96,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     // Check configuration before attempting to sign in
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || 
-        !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-        process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder') ||
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.includes('placeholder')) {
-      throw new Error('Supabase is not configured. Please set up your environment variables in .env.local file.')
+    try {
+      validateSupabaseConfig()
+    } catch (error) {
+      throw error
     }
 
     try {
@@ -107,11 +125,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signUp = async (email: string, password: string, fullName?: string) => {
     // Check configuration before attempting to sign up
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || 
-        !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-        process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder') ||
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.includes('placeholder')) {
-      throw new Error('Supabase is not configured. Please set up your environment variables in .env.local file.')
+    try {
+      validateSupabaseConfig()
+    } catch (error) {
+      throw error
     }
 
     try {
