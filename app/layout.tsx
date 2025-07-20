@@ -28,8 +28,25 @@ export default function RootLayout({
           <Toaster 
             position="top-right"
             toastOptions={{
-              className: 'bg-white border shadow-lg',
+              className: '!bg-white !text-gray-900 !border !border-gray-200 !shadow-lg',
               duration: 4000,
+              style: {
+                background: '#ffffff',
+                color: '#111827',
+                border: '1px solid #e5e7eb',
+              },
+              success: {
+                iconTheme: {
+                  primary: '#10b981',
+                  secondary: '#ffffff',
+                },
+              },
+              error: {
+                iconTheme: {
+                  primary: '#ef4444',
+                  secondary: '#ffffff',
+                },
+              },
             }}
           />
         </AuthProvider>
