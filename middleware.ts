@@ -66,30 +66,30 @@ export async function middleware(req: NextRequest) {
   )
 
   try {
+    // Use getUser instead of getSession – this validates the JWT with Supabase and
+    // automatically refreshes expired tokens via the cookie helpers above.
     const {
-      data: { session },
-    } = await supabase.auth.getSession()
+      data: { user },
+    } = await supabase.auth.getUser()
 
     const isAuthPage = req.nextUrl.pathname.startsWith('/auth')
-    const isRootPage = req.nextUrl.pathname === '/'
-    
-    // Don't redirect if we're already on the auth callback page
+
+    // Allow the dedicated callback route to proceed without extra redirects
     if (req.nextUrl.pathname === '/auth/callback') {
       return response
     }
 
-    // Check if user is trying to access auth pages while logged in
-    if (session && isAuthPage && req.nextUrl.pathname !== '/auth/callback') {
+    // If the user is logged-in and tries to access any /auth* route (except callback),
+    // send them to the application root instead.
+    if (user && isAuthPage) {
       console.log('User already authenticated, redirecting to main app')
       return NextResponse.redirect(new URL('/', req.url))
     }
 
-    // Only redirect to auth if:
-    // 1. No session exists
-    // 2. We're not already on an auth page
-    // 3. We're trying to access a protected route
-    if (!session && !isAuthPage) {
-      console.log('No session found, redirecting to auth')
+    // If there is **no** authenticated user and we're not already on an /auth route,
+    // force them to the auth screen.
+    if (!user && !isAuthPage) {
+      console.log('No authenticated user found, redirecting to auth')
       return NextResponse.redirect(new URL('/auth', req.url))
     }
   } catch (error) {
