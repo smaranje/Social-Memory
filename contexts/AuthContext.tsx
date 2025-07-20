@@ -27,6 +27,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Check if Supabase is properly configured
     if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
       console.error('Supabase configuration missing. Please set up your environment variables.')
+      console.error('NEXT_PUBLIC_SUPABASE_URL:', process.env.NEXT_PUBLIC_SUPABASE_URL)
+      console.error('NEXT_PUBLIC_SUPABASE_ANON_KEY:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Missing')
       setLoading(false)
       return
     }
@@ -85,21 +87,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) throw error
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      if (error) {
+        console.error('Supabase signIn error:', error)
+        throw new Error(error.message || 'Failed to sign in')
+      }
+    } catch (error: any) {
+      console.error('SignIn error:', error)
+      if (error.message?.includes('fetch')) {
+        throw new Error('Unable to connect to authentication service. Please check your internet connection and try again.')
+      }
+      throw error
+    }
   }
 
   const signUp = async (email: string, password: string, fullName?: string) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullName
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName
+          }
         }
+      })
+      if (error) {
+        console.error('Supabase signUp error:', error)
+        throw new Error(error.message || 'Failed to create account')
       }
-    })
-    if (error) throw error
+    } catch (error: any) {
+      console.error('SignUp error:', error)
+      if (error.message?.includes('fetch')) {
+        throw new Error('Unable to connect to authentication service. Please check your internet connection and try again.')
+      }
+      throw error
+    }
   }
 
   const signOut = async () => {
