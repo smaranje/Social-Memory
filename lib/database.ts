@@ -4,14 +4,22 @@ import { Contact, Conversation, Reminder, PersonalDetail } from '@/types'
 export const database = {
   // Profile operations
   async getProfile(userId: string) {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .single()
-    
-    if (error) throw error
-    return data
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single()
+      
+      if (error && error.code !== 'PGRST116') {
+        // PGRST116 is "not found" error, which is expected if profile doesn't exist
+        throw error
+      }
+      return data
+    } catch (error) {
+      console.error('Error getting profile:', error)
+      return null
+    }
   },
 
   async updateProfile(userId: string, updates: { full_name?: string; avatar_url?: string }) {
@@ -30,20 +38,42 @@ export const database = {
   },
 
   async createProfile(profile: { id: string; email: string; full_name?: string }) {
-    const { data, error } = await supabase
-      .from('profiles')
-      .insert([{
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .insert([{
+          id: profile.id,
+          email: profile.email,
+          full_name: profile.full_name || null,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }])
+        .select()
+        .single()
+      
+      if (error) {
+        // If profile already exists, try to get it instead
+        if (error.code === '23505') { // Unique constraint violation
+          console.log('Profile already exists, fetching existing profile')
+          const existingProfile = await this.getProfile(profile.id)
+          if (existingProfile) {
+            return existingProfile
+          }
+        }
+        throw error
+      }
+      return data
+    } catch (error) {
+      console.error('Error creating profile:', error)
+      // Return a basic profile object if creation fails
+      return {
         id: profile.id,
         email: profile.email,
         full_name: profile.full_name || null,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
-      }])
-      .select()
-      .single()
-    
-    if (error) throw error
-    return data
+      }
+    }
   },
 
   // Contact operations

@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -16,8 +16,34 @@ export default function AuthPage() {
   const [password, setPassword] = useState('')
   const [fullName, setFullName] = useState('')
   const [loading, setLoading] = useState(false)
-  const { signIn, signUp, signInWithGoogle } = useAuth()
+  const { user, signIn, signUp, signInWithGoogle, loading: authLoading } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  // Redirect if user is already authenticated
+  useEffect(() => {
+    if (!authLoading && user) {
+      console.log('User already authenticated, redirecting to main app')
+      router.push('/')
+    }
+  }, [user, authLoading, router])
+
+  // Handle error messages from URL params
+  useEffect(() => {
+    const error = searchParams.get('error')
+    if (error) {
+      switch (error) {
+        case 'callback_error':
+          toast.error('Authentication callback failed. Please try again.')
+          break
+        case 'unexpected_error':
+          toast.error('An unexpected error occurred. Please try again.')
+          break
+        default:
+          toast.error('An authentication error occurred.')
+      }
+    }
+  }, [searchParams])
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -26,7 +52,7 @@ export default function AuthPage() {
     try {
       await signIn(email, password)
       toast.success('Welcome back!')
-      router.push('/')
+      // The useEffect above will handle the redirect when user state updates
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to sign in')
     } finally {
@@ -41,7 +67,7 @@ export default function AuthPage() {
     try {
       await signUp(email, password, fullName)
       toast.success('Account created! Please check your email to verify your account.')
-      router.push('/')
+      // The useEffect above will handle the redirect when user state updates
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to create account')
     } finally {
@@ -56,9 +82,20 @@ export default function AuthPage() {
       await signInWithGoogle()
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to sign in with Google')
-    } finally {
       setLoading(false)
     }
+  }
+
+  // Show loading if auth is still initializing
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Checking authentication...</p>
+        </div>
+      </div>
+    )
   }
 
   return (

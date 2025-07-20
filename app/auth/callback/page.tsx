@@ -25,26 +25,30 @@ function AuthCallbackContent() {
           }
 
           if (data.session) {
-            // Successfully authenticated
+            // Successfully authenticated - redirect to main app
+            console.log('Authentication successful, redirecting to main app')
             router.push('/')
-          } else {
-            router.push('/auth')
-          }
-        } else {
-          // No code parameter, check if we have a session
-          const { data, error } = await supabase.auth.getSession()
-          
-          if (error) {
-            console.error('Auth callback error:', error)
-            router.push('/auth?error=callback_error')
             return
           }
+        }
+        
+        // No code parameter or no session, check current session
+        const { data, error } = await supabase.auth.getSession()
+        
+        if (error) {
+          console.error('Auth callback error:', error)
+          router.push('/auth?error=callback_error')
+          return
+        }
 
-          if (data.session) {
-            router.push('/')
-          } else {
-            router.push('/auth')
-          }
+        if (data.session) {
+          // User is authenticated, go to main app
+          console.log('Session exists, redirecting to main app')
+          router.push('/')
+        } else {
+          // No session, go back to auth
+          console.log('No session found, redirecting to auth')
+          router.push('/auth')
         }
       } catch (error) {
         console.error('Unexpected auth callback error:', error)
