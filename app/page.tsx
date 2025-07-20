@@ -1,65 +1,115 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Contact } from '@/types';
-import { storage } from '@/lib/storage';
+import { database } from '@/lib/database';
+import { useAuth } from '@/contexts/AuthContext';
 import { ContactCard } from '@/components/ContactCard';
 import { ContactDetail } from '@/components/ContactDetail';
 import { AddContactForm } from '@/components/AddContactForm';
+import { UserProfile } from '@/components/UserProfile';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { 
   Brain, 
   Search, 
   Plus, 
   Users, 
-  Clock,
   MessageSquare,
-  TrendingUp,
   Sparkles,
   Heart,
-  Calendar
+  Calendar,
+  User
 } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 export default function Home() {
+  const { user, profile, loading } = useAuth();
+  const router = useRouter();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [isAddingContact, setIsAddingContact] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+  const [dataLoading, setDataLoading] = useState(false);
 
   useEffect(() => {
-    loadContacts();
-  }, []);
+    if (!loading) {
+      if (!user) {
+        router.push('/auth');
+      } else {
+        loadContacts();
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, loading, router]);
 
-  const loadContacts = () => {
-    const storedContacts = storage.getContacts();
-    setContacts(storedContacts);
+  const loadContacts = async () => {
+    if (!user) return;
+    
+    setDataLoading(true);
+    try {
+      const userContacts = await database.getContacts(user.id);
+      setContacts(userContacts);
+    } catch (error) {
+      toast.error('Failed to load contacts');
+      console.error('Error loading contacts:', error);
+    } finally {
+      setDataLoading(false);
+    }
   };
 
-  const handleAddContact = (contact: Contact) => {
-    storage.saveContact(contact);
-    loadContacts();
-    setIsAddingContact(false);
+  const handleAddContact = async (contact: Contact) => {
+    if (!user) return;
+    
+    try {
+      await database.saveContact(contact, user.id);
+      await loadContacts();
+      setIsAddingContact(false);
+      toast.success('Contact added successfully!');
+    } catch (error) {
+      toast.error('Failed to add contact');
+      console.error('Error adding contact:', error);
+    }
   };
 
-  const handleUpdateContact = (contact: Contact) => {
-    storage.saveContact(contact);
-    loadContacts();
-    setSelectedContact(contact);
+  const handleUpdateContact = async (contact: Contact) => {
+    if (!user) return;
+    
+    try {
+      await database.saveContact(contact, user.id);
+      await loadContacts();
+      setSelectedContact(contact);
+      toast.success('Contact updated successfully!');
+    } catch (error) {
+      toast.error('Failed to update contact');
+      console.error('Error updating contact:', error);
+    }
   };
 
-  const handleDeleteContact = (contactId: string) => {
-    storage.deleteContact(contactId);
-    loadContacts();
-    setSelectedContact(null);
+  const handleDeleteContact = async (contactId: string) => {
+    if (!user) return;
+    
+    try {
+      await database.deleteContact(contactId, user.id);
+      await loadContacts();
+      setSelectedContact(null);
+      toast.success('Contact deleted successfully!');
+    } catch (error) {
+      toast.error('Failed to delete contact');
+      console.error('Error deleting contact:', error);
+    }
   };
 
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    contact.company?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    contact.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+  const filteredContacts = searchQuery.trim() 
+    ? contacts.filter(contact =>
+        contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        contact.company?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        contact.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+      )
+    : contacts;
 
   const upcomingReminders = contacts.flatMap(c => 
     c.reminders.filter(r => !r.completed)
@@ -115,13 +165,25 @@ export default function Home() {
               </div>
             </div>
             
-            <Button 
-              onClick={() => setIsAddingContact(true)} 
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 rounded-xl px-6 py-3"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Add Contact
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button 
+                onClick={() => setIsAddingContact(true)} 
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 rounded-xl px-6 py-3"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Contact
+              </Button>
+              
+              <Button 
+                onClick={() => setShowProfile(true)} 
+                variant="outline"
+                className="bg-white/80 backdrop-blur-sm border-gray-200 hover:bg-white/90 rounded-xl px-4 py-3"
+                title={`Logged in as ${profile?.full_name || user?.email}`}
+              >
+                <User className="h-4 w-4 mr-2" />
+                {profile?.full_name?.split(' ')[0] || 'Profile'}
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -263,6 +325,29 @@ export default function Home() {
           </div>
         )}
       </div>
+      
+      {/* User Profile Modal */}
+      {showProfile && (
+        <UserProfile onClose={() => setShowProfile(false)} />
+      )}
     </div>
   );
+
+  // Show loading state while authentication is being checked
+  if (loading || dataLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-4 rounded-2xl w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+            <Brain className="h-10 w-10 text-white animate-pulse" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Social Memory</h2>
+          <p className="text-gray-600 mb-4">
+            {loading ? 'Checking authentication...' : 'Loading your contacts...'}
+          </p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+        </div>
+      </div>
+    );
+  }
 }
