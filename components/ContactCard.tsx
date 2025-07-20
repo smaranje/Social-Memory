@@ -17,7 +17,7 @@ import {
   Building2,
   Tag
 } from 'lucide-react';
-import { format, formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow } from 'date-fns';
 
 interface ContactCardProps {
   contact: Contact;

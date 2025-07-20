@@ -1,15 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { Contact, Conversation, Reminder, PersonalDetail } from '@/types';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Contact, Conversation, Reminder } from '@/types';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { 
-  ArrowLeft, 
   Calendar, 
   MessageSquare, 
   User, 
@@ -20,10 +19,8 @@ import {
   Edit,
   Trash2,
   ChevronLeft,
-  MoreVertical,
   Bell,
   Sparkles,
-  Circle,
   Building2,
   Heart,
   Briefcase,
