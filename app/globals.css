@@ -1,59 +1,64 @@
 @import "tailwindcss";
 
-/* CSS Custom Properties for shadcn/ui components */
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 84% 4.9%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222.2 84% 4.9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-    --radius: 0.5rem;
-  }
+@theme {
+  /* shadcn/ui compatible theme colors */
+  --color-background: oklch(100% 0 0);
+  --color-foreground: oklch(22.2% 0.084 4.9);
+  --color-card: oklch(100% 0 0);
+  --color-card-foreground: oklch(22.2% 0.084 4.9);
+  --color-popover: oklch(100% 0 0);
+  --color-popover-foreground: oklch(22.2% 0.084 4.9);
+  --color-primary: oklch(53.3% 0.232 221.2);
+  --color-primary-foreground: oklch(98% 0.04 210);
+  --color-secondary: oklch(96% 0.04 210);
+  --color-secondary-foreground: oklch(22.2% 0.084 4.9);
+  --color-muted: oklch(96% 0.04 210);
+  --color-muted-foreground: oklch(46.9% 0.163 215.4);
+  --color-accent: oklch(96% 0.04 210);
+  --color-accent-foreground: oklch(22.2% 0.084 4.9);
+  --color-destructive: oklch(60.2% 0.242 0);
+  --color-destructive-foreground: oklch(98% 0.04 210);
+  --color-border: oklch(91.4% 0.318 214.3);
+  --color-input: oklch(91.4% 0.318 214.3);
+  --color-ring: oklch(53.3% 0.232 221.2);
+  
+  /* Spacing and radius */
+  --radius: 0.5rem;
+}
 
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 84% 4.9%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 94.1%;
+/* Dark mode theme */
+@media (prefers-color-scheme: dark) {
+  @theme {
+    --color-background: oklch(4.9% 0.084 222.2);
+    --color-foreground: oklch(98% 0.04 210);
+    --color-card: oklch(4.9% 0.084 222.2);
+    --color-card-foreground: oklch(98% 0.04 210);
+    --color-popover: oklch(4.9% 0.084 222.2);
+    --color-popover-foreground: oklch(98% 0.04 210);
+    --color-primary: oklch(59.8% 0.212 217.2);
+    --color-primary-foreground: oklch(4.9% 0.084 222.2);
+    --color-secondary: oklch(17.5% 0.326 217.2);
+    --color-secondary-foreground: oklch(98% 0.04 210);
+    --color-muted: oklch(17.5% 0.326 217.2);
+    --color-muted-foreground: oklch(65.1% 0.202 215);
+    --color-accent: oklch(17.5% 0.326 217.2);
+    --color-accent-foreground: oklch(98% 0.04 210);
+    --color-destructive: oklch(30.6% 0.628 0);
+    --color-destructive-foreground: oklch(98% 0.04 210);
+    --color-border: oklch(17.5% 0.326 217.2);
+    --color-input: oklch(17.5% 0.326 217.2);
+    --color-ring: oklch(94.1% 0.763 224.3);
   }
 }
 
 @layer base {
   * {
-    @apply border-[hsl(var(--border))];
+    border-color: hsl(var(--border));
   }
+  
   body {
-    @apply bg-background text-foreground;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 
