@@ -24,16 +24,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // Fallback demo user for local usage when Supabase isn't configured
+    const demoUser: User = {
+      id: 'demo-user',
+      aud: 'authenticated',
+      role: 'authenticated',
+      email: 'demo@example.com',
+      email_confirmed_at: new Date().toISOString(),
+      phone: '',
+      confirmed_at: new Date().toISOString(),
+      last_sign_in_at: new Date().toISOString(),
+      app_metadata: {},
+      user_metadata: {},
+      identities: [],
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    } as unknown as User
+
     // Check if Supabase is properly configured
     try {
       validateSupabaseConfig()
     } catch (error) {
-      console.error('Supabase configuration error:', error)
-      // Show user-friendly error message
-      if (typeof window !== 'undefined') {
-        const errorMsg = error instanceof Error ? error.message : 'Supabase configuration error'
-        console.warn('Authentication disabled:', errorMsg)
-      }
+      console.warn('Supabase configuration error detected – falling back to demo user:', error)
+      // Use demo user and skip Supabase auth entirely
+      setUser(demoUser)
+      setProfile({
+        id: demoUser.id,
+        email: demoUser.email,
+        full_name: 'Demo User',
+      })
       setLoading(false)
       return
     }
