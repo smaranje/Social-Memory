@@ -25,8 +25,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Check if Supabase is properly configured
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-      console.error('Supabase configuration missing. Please set up your environment variables.')
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || 
+        !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+        process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder') ||
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.includes('placeholder')) {
+      console.error('Supabase configuration missing or using placeholder values.')
+      console.error('Please update your .env.local file with actual Supabase credentials.')
       console.error('NEXT_PUBLIC_SUPABASE_URL:', process.env.NEXT_PUBLIC_SUPABASE_URL)
       console.error('NEXT_PUBLIC_SUPABASE_ANON_KEY:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Not set')
       setLoading(false)
@@ -72,6 +76,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const signIn = async (email: string, password: string) => {
+    // Check configuration before attempting to sign in
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || 
+        !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+        process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder') ||
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.includes('placeholder')) {
+      throw new Error('Supabase is not configured. Please set up your environment variables in .env.local file.')
+    }
+
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -86,14 +98,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.log('Sign in successful:', data)
     } catch (error: any) {
       console.error('SignIn error:', error)
-      if (error.message?.includes('fetch')) {
-        throw new Error('Unable to connect to authentication service. Please check your internet connection and try again.')
+      if (error.message?.includes('fetch') || error.message?.includes('Failed to fetch')) {
+        throw new Error('Unable to connect to authentication service. Please check your Supabase configuration and internet connection.')
       }
       throw error
     }
   }
 
   const signUp = async (email: string, password: string, fullName?: string) => {
+    // Check configuration before attempting to sign up
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || 
+        !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+        process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder') ||
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.includes('placeholder')) {
+      throw new Error('Supabase is not configured. Please set up your environment variables in .env.local file.')
+    }
+
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -116,8 +136,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       // Handle different types of errors
       if (error instanceof Error) {
-        if (error.message?.includes('fetch')) {
-          throw new Error('Unable to connect to authentication service. Please check your internet connection and try again.')
+        if (error.message?.includes('fetch') || error.message?.includes('Failed to fetch')) {
+          throw new Error('Unable to connect to authentication service. Please check your Supabase configuration and internet connection.')
         }
         throw error
       }
