@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState } from 'react'
-import { User } from '@supabase/supabase-js'
+import { User, AuthError } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 import { database } from '@/lib/database'
 
@@ -28,71 +28,62 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
       console.error('Supabase configuration missing. Please set up your environment variables.')
       console.error('NEXT_PUBLIC_SUPABASE_URL:', process.env.NEXT_PUBLIC_SUPABASE_URL)
-      console.error('NEXT_PUBLIC_SUPABASE_ANON_KEY:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Missing')
+      console.error('NEXT_PUBLIC_SUPABASE_ANON_KEY:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Not set')
       setLoading(false)
       return
     }
 
+    console.log('Supabase Auth Context: Initializing...')
+    console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL)
+    console.log('Supabase Key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Not set')
+
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Initial session:', session)
       setUser(session?.user ?? null)
-      if (session?.user) {
-        loadProfile(session.user.id)
-      }
       setLoading(false)
     })
 
     // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      setUser(session?.user ?? null)
-      
-      if (session?.user) {
-        await loadProfile(session.user.id)
-      } else {
-        setProfile(null)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log('Auth state changed:', event, session)
+        setUser(session?.user ?? null)
+        
+                 if (session?.user) {
+           try {
+             // Load user profile
+             const profile = await database.getProfile(session.user.id)
+             console.log('User profile loaded:', profile)
+             setProfile(profile)
+           } catch (error) {
+             console.error('Error loading profile:', error)
+             setProfile(null)
+           }
+         } else {
+           setProfile(null)
+         }
+        
+        setLoading(false)
       }
-      
-      setLoading(false)
-    })
+    )
 
     return () => subscription.unsubscribe()
   }, [])
 
-  const loadProfile = async (userId: string) => {
-    try {
-      const profileData = await database.getProfile(userId)
-      setProfile(profileData)
-    } catch (error: any) {
-      // If profile doesn't exist, create it
-      if (error.code === 'PGRST116') {
-        const user = await supabase.auth.getUser()
-        if (user.data.user) {
-          try {
-            const newProfile = await database.createProfile({
-              id: userId,
-              email: user.data.user.email!,
-              full_name: user.data.user.user_metadata?.full_name
-            })
-            setProfile(newProfile)
-          } catch (createError) {
-            console.error('Error creating profile:', createError)
-          }
-        }
-      } else {
-        console.error('Error loading profile:', error)
-      }
-    }
-  }
-
   const signIn = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+      
       if (error) {
         console.error('Supabase signIn error:', error)
         throw new Error(error.message || 'Failed to sign in')
       }
+      
+      console.log('Sign in successful:', data)
     } catch (error: any) {
       console.error('SignIn error:', error)
       if (error.message?.includes('fetch')) {
@@ -104,7 +95,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signUp = async (email: string, password: string, fullName?: string) => {
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -113,16 +104,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         }
       })
+      
       if (error) {
         console.error('Supabase signUp error:', error)
         throw new Error(error.message || 'Failed to create account')
       }
-    } catch (error: any) {
+      
+      console.log('Sign up successful:', data)
+    } catch (error: unknown) {
       console.error('SignUp error:', error)
-      if (error.message?.includes('fetch')) {
-        throw new Error('Unable to connect to authentication service. Please check your internet connection and try again.')
+      
+      // Handle different types of errors
+      if (error instanceof Error) {
+        if (error.message?.includes('fetch')) {
+          throw new Error('Unable to connect to authentication service. Please check your internet connection and try again.')
+        }
+        throw error
       }
-      throw error
+      
+      // Handle AuthError specifically
+      if (typeof error === 'object' && error !== null && 'message' in error) {
+        const authError = error as AuthError
+        throw new Error(authError.message || 'Failed to create account')
+      }
+      
+      throw new Error('An unexpected error occurred during sign up')
     }
   }
 
