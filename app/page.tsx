@@ -38,13 +38,13 @@ export default function Home() {
   };
 
   const handleAddContact = (contact: Contact) => {
-    storage.addContact(contact);
+    storage.saveContact(contact);
     loadContacts();
     setIsAddingContact(false);
   };
 
   const handleUpdateContact = (contact: Contact) => {
-    storage.updateContact(contact);
+    storage.saveContact(contact);
     loadContacts();
     setSelectedContact(contact);
   };

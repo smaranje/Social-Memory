@@ -281,6 +281,8 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
               Conversations
             </CardTitle>
             <Button 
+              type="button"
+              variant="secondary"
               size="sm" 
               onClick={() => setIsAddingConversation(true)}
               disabled={isAddingConversation}
@@ -303,6 +305,8 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
               />
               <div className="flex gap-3">
                 <Button 
+                  type="button"
+                  variant="secondary"
                   size="sm" 
                   onClick={handleAddConversation}
                   className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white rounded-xl px-6"
@@ -311,6 +315,7 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
                   Save
                 </Button>
                 <Button 
+                  type="button"
                   size="sm" 
                   variant="outline" 
                   onClick={() => {
@@ -363,6 +368,8 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
               Reminders
             </CardTitle>
             <Button 
+              type="button"
+              variant="secondary"
               size="sm" 
               onClick={() => setIsAddingReminder(true)}
               disabled={isAddingReminder}
@@ -411,6 +418,8 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
               </div>
               <div className="flex gap-3">
                 <Button 
+                  type="button"
+                  variant="secondary"
                   size="sm" 
                   onClick={handleAddReminder}
                   className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-xl px-6"
@@ -419,6 +428,7 @@ export function ContactDetail({ contact, onBack, onUpdate, onDelete, aiInsights 
                   Save
                 </Button>
                 <Button 
+                  type="button"
                   size="sm" 
                   variant="outline" 
                   onClick={() => {
